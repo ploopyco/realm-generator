@@ -7,6 +7,8 @@ That is, it was work. Until now. Presenting...
 
 In a single click, you can generate a complex, interwoven realm filled with intrigue, ready for any tabletop gaming experience.
 
+[In fact, you can do it right now, without having to build anything. Check it out!](https://infinite-woodland-34884.herokuapp.com/)
+
 ## Building
 
 Building the code is easy enough. Assuming the use of Python 3, check out the code, change to the source directory, and then:
