@@ -9,7 +9,6 @@ import json
 from . import family
 from . import faction
 from . import event
-from . import donate
 
 from .word.name.noble import noble_names
 from .word.name.female import female_names
