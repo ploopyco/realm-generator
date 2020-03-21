@@ -25,13 +25,13 @@ from .word.seat import seat_suffixes
 
 # Some good default values
 GREAT_FAMILIES = 7
-MINOR_FAMILIES = 99
-LANDED_FAMILIES = 750
-POWERFUL_FACTIONS = 28
-WEAK_FACTIONS = 109
-START_NOBLE_EVENTS = 1000
-START_COURTIER_EVENTS = 1000
-START_FAMILY_EVENTS = 500
+MINOR_FAMILIES = 45
+LANDED_FAMILIES = 350
+POWERFUL_FACTIONS = 7
+WEAK_FACTIONS = 19
+START_NOBLE_EVENTS = 500
+START_COURTIER_EVENTS = 500
+START_FAMILY_EVENTS = 250
 
 app = flask.Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(32)
@@ -56,7 +56,7 @@ def index():
 
 @app.route('/load')
 def load():
-    realm = {"nobility": "null"}
+    realm = "null"
     return flask.render_template('realm.html', realm=realm)
 
 
@@ -123,11 +123,11 @@ def generate_realm(form):
         event_generator.new_family_event()
 
     realm = {
-        "nobility": json.dumps(nobility, cls=RealmEncoder),
-        "factions": json.dumps(factions, cls=RealmEncoder)
+        "nobility": nobility,
+        "factions": factions
     }
 
-    return realm
+    return json.dumps(realm, cls=RealmEncoder)
 
 
 class GenerateForm(flask_wtf.FlaskForm):

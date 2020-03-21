@@ -22,7 +22,7 @@ class Faction():
         self.powerful = powerful
         self.reputation = random.choice(adjectives)
 
-        num_of_mems = math.floor(random.random() * 7)
+        num_of_mems = 3 + math.floor(random.random() * 7)
 
         if self.powerful is True:
             self.size = math.floor(

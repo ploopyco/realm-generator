@@ -37,7 +37,6 @@
   Loading...
 </div>
 
-<!-- We need a way of dynamically changing how things appear. -->
 <div class="container">
 
   <div class="container my-2"></div>
@@ -57,10 +56,15 @@
 
 {% block scripts %}
 <script>
-  var nobility = {{ realm["nobility"]|safe }};
+  var realm = {{ realm|safe }};
+  var nobility = null;
+  var factions = null;
 
   $(document).ready(function() {
-    if (nobility != null) {
+    if (realm != null) {
+      nobility = realm.nobility;
+      factions = realm.factions;
+
       displayRealm();
       $('#overlay').hide();
 
@@ -68,7 +72,7 @@
         $('#overlay').html('<div class="spinner"></div><br>Preparing save data...');
         showSpinner();
         setTimeout(function() {
-          $('#save-data').html(JSON.stringify(nobility));
+          $('#save-data').html(JSON.stringify(realm));
           $('#save-data').show();
           hideSpinner();
         $('#overlay').html('<div class="spinner"></div><br>Loading...');
@@ -108,7 +112,9 @@
     $('#realm').html(html);
     $('button#load-data').click(function() {
       var data = $('textarea#data-loader').val();
-      nobility = JSON.parse(data);
+      realm = JSON.parse(data);
+      nobility = realm.nobility;
+      factions = realm.factions;
       displayRealm();
     });
   }
@@ -130,15 +136,39 @@
         <div class="container text-center"> \
           <h3>The Royal ' + royalFamily.family_realm_name + '</h3> \
           <div class="container mb-5"> \
-            <button data-family="' + royalFamily.name + '" type="button" class="btn btn-primary btn-block btn-lg">The Royal ' + royalFamily.family_realm_name + ' of ' + royalFamily.name + '</button> \
+            <button data-family="' + royalFamily.name + '" type="button" class="family btn btn-primary btn-block btn-lg">The Royal ' + royalFamily.family_realm_name + ' of ' + royalFamily.name + '</button> \
           </div> \
           <h3>The Great ' + royalFamily.family_realm_name + 's</h3> \
-          <div id="great-families" class="container mb-2">';
+          <div id="great-families" class="container mb-5">';
 
     for (var i = 0; i < nobility.length; i++) {
       if (nobility[i].rank != "royal") {
         realmHtml += ' \
-            <button data-family="' + nobility[i].name + '" type="button" class="btn btn-primary btn-block btn-lg">The Great ' + nobility[i].family_realm_name + ' of ' + nobility[i].name + '</button>';
+            <button data-family="' + nobility[i].name + '" type="button" class="family btn btn-primary btn-block btn-lg">The Great ' + nobility[i].family_realm_name + ' of ' + nobility[i].name + '</button>';
+      }
+    }
+
+    realmHtml += ' \
+        </div> \
+        <h3>Powerful Factions</h3> \
+        <div class="container mb-5">';
+
+    for (var i = 0; i < factions.length; i++) {
+      if (factions[i].powerful == true) {
+        realmHtml += ' \
+            <button data-faction="' + factions[i].name + '" type="button" class="faction btn btn-secondary btn-block btn-lg">The ' + factions[i].name + '</button>';
+      }
+    }
+
+    realmHtml += ' \
+        </div> \
+        <h3>Weak Factions</h3> \
+        <div class="container mb-5">';
+
+    for (var i = 0; i < factions.length; i++) {
+      if (factions[i].powerful == false) {
+        realmHtml += ' \
+            <button data-faction="' + factions[i].name + '" type="button" class="faction btn btn-secondary btn-block btn-lg">The ' + factions[i].name + '</button>';
       }
     }
 
@@ -146,9 +176,14 @@
 
     $('#realm').html(realmHtml);
 
-    $('#realm button').click(function() {
+    $('#realm button.family').click(function() {
       var name = $(this).attr('data-family');
       displayFamily(name);
+    });
+
+    $('#realm button.faction').click(function() {
+      var name = $(this).attr('data-faction');
+      displayFaction(name);
     });
 
     connectAllATags();
@@ -196,6 +231,49 @@
 
     if (family.knights.length > 0)
       html += makeKnightsHtml(family);
+
+    $('#realm').html(html);
+
+    $('#realm button').click(function() {
+      var name = $(this).attr('data-family');
+      displayFamily(name);
+    });
+
+    connectAllATags();
+
+    window.scrollTo(0, 0);
+  }
+
+  function displayFaction(name) {
+    updateBreadcrumb(name);
+
+    var faction = findFaction(name);
+
+    var html = ' \
+        <h1>The ' + faction.name + '</h1> \
+        <h5><b>Reputation</b> - ' + faction.reputation + '</h5> \
+        <h5><b>Active Agents</b> - ' + faction.size + '</b> \
+        <h5><b>Region</b> - <a class="family-link" href="#" data-family="' +
+        makeDataFromName(faction.region, nobility) + '">' + faction.region + '</a></b> \
+        <h5><b>Faction Leader</b> - ' + getFullName(findLeader(faction)) + '</h5>';
+
+    if (faction.persons.length > 0)
+      html += makeAgentsHtml(faction);
+
+    if (faction.events.length != 0) {
+      html += '<h5><b>Recent Events</b></h5><ul>';
+      for (var j = 0; j < faction.events.length; j++) {
+        var event = faction.events[j];
+        html += ' \
+            <li>' +
+            event.description +
+            ' <i>(general reactions: ' +
+            event.reactions[0] + ', ' +
+            event.reactions[1] + ', ' +
+            event.reactions[2] + ')</i></li>';
+      }
+      html += '</ul>';
+    }
 
     $('#realm').html(html);
 
@@ -274,6 +352,40 @@
         html += '<ul>';
         for (var j = 0; j < courtier.events.length; j++) {
           var event = courtier.events[j];
+          html += ' \
+              <li>' +
+              event.description +
+              ' <i>(general reactions: ' +
+              event.reactions[0] + ', ' +
+              event.reactions[1] + ', ' +
+              event.reactions[2] + ')</i></li>';
+        }
+        html += '</ul>';
+      }
+    }
+    html += '</ul>';
+
+    return html;
+  }
+
+  function makeAgentsHtml(faction) {
+    var html = '<h5><b>Lieutenants</b></h5><ul>';
+    for (var i = 0; i < faction.persons.length; i++) {
+      var agent = faction.persons[i];
+
+      html += ' \
+          <li>' +
+          getFullName(agent) + ', ' +
+          agent.sex + ', ' +
+          agent.age + ' years old, ' +
+          agent.race + ' - ' +
+          '<i>' + agent.character + ' character, ' +
+          agent.past + ' past</i>';
+
+      if (agent.events.length != 0) {
+        html += '<ul>';
+        for (var j = 0; j < agent.events.length; j++) {
+          var event = agent.events[j];
           html += ' \
               <li>' +
               event.description +
@@ -432,7 +544,6 @@
     return null;
   }
 
-  // Find the given family within an array of families.
   function findFamily(family, families) {
     for (var i = 0; i < families.length; i++) {
       if (families[i]["name"] == family) {
@@ -471,6 +582,16 @@
     if (courtier.post_nickname != undefined)
       string += '"' + courtier.post_nickname + '" ';
     return string.substring(0, string.length - 1);
+  }
+
+  function findFaction(name) {
+    for (var i = 0; i < factions.length; i++) {
+      if (factions[i].name == name) {
+        return factions[i];
+        break;
+      }
+    }
+    return null;
   }
 
   // --- Utility Functions ------------------------------------------------ //
