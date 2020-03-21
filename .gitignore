@@ -125,7 +125,7 @@ dmypy.json
 .pyre/
 
 # Ploopy donation page
-#templates/donate.html
-#donate.py
-#static/
+templates/donate.html
+donate.py
+static/
 

@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<header>
+  <div class="collapse bg-dark" id="navbarHeader">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-md-7 pt-4">
+          <h4 class="text-white">Want to export your realm?</h4>
+          <button id="get-save-data" type="button" class="btn btn-secondary">Get Your Save Data</button>
+          <textarea class="mt-3 form-control" id="save-data" rows="5" style="display:none"></textarea>
+          <p class="text-muted">Copy and paste the generated data and keep it somewhere safe.</p>
+        </div>
+        <div class="col-sm-4 offset-md-1 pt-4">
+          <h4 class="text-white">While you're here, <a href="https://github.com/ploopyco/realm-generator" class="text-muted">why not check out the source code?</a></h4>
+          <p class="text-white">Although this is free to use, <a href="/donate" class="text-muted">please consider supporting the creators!</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navbar navbar-dark bg-dark box-shadow">
+    <div class="container d-flex justify-content-between">
+      <a href="/" class="navbar-brand d-flex align-items-center">
+        <strong>The Realm Generator</strong>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="overlay">
+  <div class="spinner"></div>
+  <br>
+  Loading...
+</div>
+
+<!-- We need a way of dynamically changing how things appear. -->
+<div class="container">
+
+  <div class="container my-2"></div>
+
+  <nav aria-label="breadcrumb">
+    <ol id="realm-breadcrumb" class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">The Realm</li>
+    </ol>
+  </nav>
+
+  <div id="realm">
+  </div>
+
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+  var nobility = {{ realm["nobility"]|safe }};
+
+  $(document).ready(function() {
+    if (nobility != null) {
+      displayRealm();
+      $('#overlay').hide();
+
+      $('#get-save-data').click(function() {
+        $('#overlay').html('<div class="spinner"></div><br>Preparing save data...');
+        showSpinner();
+        setTimeout(function() {
+          $('#save-data').html(JSON.stringify(nobility));
+          $('#save-data').show();
+          hideSpinner();
+        $('#overlay').html('<div class="spinner"></div><br>Loading...');
+        }, 50);
+      });
+
+      $('#navbarHeader').on('hidden.bs.collapse', function () {
+        $('#save-data').html("");
+          $('#save-data').hide();
+      });
+    } else {
+      displayLoader();
+      hideSpinner();
+    }
+  });
+
+  function hideSpinner() {
+    $('#overlay').hide();
+  }
+
+  function showSpinner() {
+    $('#overlay').show();
+  }
+
+  // --- Data Loader Functions -------------------------------------------- //
+
+  function displayLoader() {
+    var html = ' \
+        <div class="container text-center"> \
+          <h5>Paste the data that you want to load into the box below.</h5> \
+          <h5 class="text-muted">Note that pasting a large amount of data will cause your browser to hang up. Just give it a second.</h5> \
+          <textarea class="my-3 form-control" rows="5" id="data-loader"></textarea> \
+          <button id="load-data" type="button" class="btn btn-secondary">Load Your Save Data</button> \
+        </div> \
+        ';
+
+    $('#realm').html(html);
+    $('button#load-data').click(function() {
+      var data = $('textarea#data-loader').val();
+      nobility = JSON.parse(data);
+      displayRealm();
+    });
+  }
+
+  // --- Page Instantiation Functions ------------------------------------- //
+
+  function displayRealm() {
+    resetBreadcrumb();
+
+    var royalFamily = null;
+    for (var i = 0; i < nobility.length; i++) {
+      if (nobility[i].rank == "royal") {
+        royalFamily = nobility[i];
+        break;
+      }
+    }
+
+    var realmHtml = ' \
+        <div class="container text-center"> \
+          <h3>The Royal ' + royalFamily.family_realm_name + '</h3> \
+          <div class="container mb-5"> \
+            <button data-family="' + royalFamily.name + '" type="button" class="btn btn-primary btn-block btn-lg">The Royal ' + royalFamily.family_realm_name + ' of ' + royalFamily.name + '</button> \
+          </div> \
+          <h3>The Great ' + royalFamily.family_realm_name + 's</h3> \
+          <div id="great-families" class="container mb-2">';
+
+    for (var i = 0; i < nobility.length; i++) {
+      if (nobility[i].rank != "royal") {
+        realmHtml += ' \
+            <button data-family="' + nobility[i].name + '" type="button" class="btn btn-primary btn-block btn-lg">The Great ' + nobility[i].family_realm_name + ' of ' + nobility[i].name + '</button>';
+      }
+    }
+
+    realmHtml += '</div></div>';
+
+    $('#realm').html(realmHtml);
+
+    $('#realm button').click(function() {
+      var name = $(this).attr('data-family');
+      displayFamily(name);
+    });
+
+    connectAllATags();
+
+    window.scrollTo(0, 0);
+  }
+
+  // --- Page Display Functions ------------------------------------------- //
+
+  function displayFamily(name) {
+    updateBreadcrumb(name);
+
+    var family = findFamilyFromData(name);
+
+    var html = ' \
+        <h1>The ' + capitalise(family.rank) + ' ' + family.family_realm_name + ' of ' + family.name + '</h1> \
+        <h5><b>Motto</b> - ' + family.motto + '</h5> \
+        <h5><b>Ancestral Seat</b> - ' + family.seat + '</h5> \
+        <h5><b>Reputation</b> - ' + family.reputation + '</h5> \
+        <h5><b>Head of the Family</b> - ' + getFullTitle(findLeader(family)) + '</h5>';
+
+    if (family.persons.length > 0)
+      html += makePersonsHtml(family);
+
+    if (family.courtiers.length > 0)
+      html += makeCourtiersHtml(family);
+
+    if (family.events.length != 0) {
+      html += '<h5><b>Recent Events</b></h5><ul>';
+      for (var j = 0; j < family.events.length; j++) {
+        var event = family.events[j];
+        html += ' \
+            <li>' +
+            event.description +
+            ' <i>(general reactions: ' +
+            event.reactions[0] + ', ' +
+            event.reactions[1] + ', ' +
+            event.reactions[2] + ')</i></li>';
+      }
+      html += '</ul>';
+    }
+
+    if (family.vassals.length > 0)
+      html += makeVassalsHtml(family);
+
+    if (family.knights.length > 0)
+      html += makeKnightsHtml(family);
+
+    $('#realm').html(html);
+
+    $('#realm button').click(function() {
+      var name = $(this).attr('data-family');
+      displayFamily(name);
+    });
+
+    connectAllATags();
+
+    window.scrollTo(0, 0);
+  }
+
+  function makePersonsHtml(family) {
+    var html = '<h5><b>Family Members</b></h5><ul>';
+    for (var i = 0; i < family.persons.length; i++) {
+      var person = family.persons[i];
+
+      if (person.leader == true) {
+        html += ' \
+            <li>' +
+            getFullTitle(person) + ', ' +
+            person.sex + ', ' +
+            person.age + ' years old, ' +
+            person.race + ' - ' +
+            '<i>' + person.character + ' character, ' +
+            person.past + ' past</i>';
+      } else {
+        html += ' \
+            <li>' +
+            getFullTitle(person) + ', ' +
+            person.leader_relation + ' of the leader, ' +
+            person.sex + ', ' +
+            person.age + ' years old, ' +
+            person.race + ' - ' +
+            '<i>' + person.character + ' character, ' +
+            person.past + ' past</i>';
+      }
+
+      if (person.events.length != 0) {
+        html += '<ul>';
+        for (var j = 0; j < person.events.length; j++) {
+          var event = person.events[j];
+          html += ' \
+              <li>' +
+              event.description +
+              ' <i>(general reactions: ' +
+              event.reactions[0] + ', ' +
+              event.reactions[1] + ', ' +
+              event.reactions[2] + ')</i></li>';
+        }
+        html += '</ul>';
+      }
+    }
+    html += '</ul>';
+
+    return html;
+  }
+
+  function makeCourtiersHtml(family) {
+    var html = '<h5><b>Courtiers</b></h5><ul>';
+    for (var i = 0; i < family.courtiers.length; i++) {
+      var courtier = family.courtiers[i];
+
+      html += ' \
+          <li>' +
+          getFullName(courtier) + ', ' +
+          courtier.position + ', ' +
+          courtier.sex + ', ' +
+          courtier.age + ' years old, ' +
+          courtier.race + ' - ' +
+          '<i>' + courtier.character + ' character, ' +
+          courtier.past + ' past</i>';
+
+      if (courtier.events.length != 0) {
+        html += '<ul>';
+        for (var j = 0; j < courtier.events.length; j++) {
+          var event = courtier.events[j];
+          html += ' \
+              <li>' +
+              event.description +
+              ' <i>(general reactions: ' +
+              event.reactions[0] + ', ' +
+              event.reactions[1] + ', ' +
+              event.reactions[2] + ')</i></li>';
+        }
+        html += '</ul>';
+      }
+    }
+    html += '</ul>';
+
+    return html;
+  }
+
+  function makeVassalsHtml(family) {
+    var html = '<h3>Vassal Houses</h3>';
+    for (var i = 0; i < family.vassals.length; i++) {
+      var vassal = family.vassals[i];
+      html += ' \
+          <div class="container mb-2"> \
+            <button data-family="' + makeDataFromFamily(vassal, nobility) + '" type="button" class="btn btn-primary btn-block btn-lg">The ' + capitalise(vassal.rank) + ' ' + vassal.family_realm_name + ' of ' + vassal.name + '</button> \
+          </div>';
+    }
+
+    return html;
+  }
+
+  function makeKnightsHtml(family) {
+    var html = '<h3>Sworn Knights</h3>';
+    for (var i = 0; i < family.knights.length; i++) {
+      var knight = family.knights[i];
+      html += ' \
+          <div class="container mb-2"> \
+            <button data-family="' + makeDataFromFamily(knight, nobility) + '" type="button" class="btn btn-primary btn-block btn-lg">The ' + capitalise(knight.rank) + ' ' + knight.family_realm_name + ' of ' + knight.name + '</button> \
+          </div>';
+    }
+
+    return html;
+  }
+
+  function resetBreadcrumb() {
+    var breadcrumbHtml = ' \
+        <li class="breadcrumb-item active" aria-current="page"> \
+          The Realm \
+        </li>';
+
+    $('#realm-breadcrumb').html(breadcrumbHtml);
+  }
+
+  function updateBreadcrumb(name) {
+    var names = name.split("/");
+
+    var breadcrumbHtml = ' \
+        <li class="breadcrumb-item"> \
+          <a href="#" data-breadcrumb="realm">The Realm</a> \
+        </li>';
+
+    if (names.length > 1) {
+      var previous = names[0];
+      breadcrumbHtml += ' \
+          <li class="breadcrumb-item"> \
+            <a href="#" data-breadcrumb="' + previous + '"> \
+              ' + previous + ' \
+            </a> \
+          </li>';
+    }
+
+    for (var i = 1; i < names.length - 1; i++) {
+      breadcrumbHtml += ' \
+          <li class="breadcrumb-item"> \
+            <a href="#" data-breadcrumb="' + previous + '/' + names[i] + '"> \
+              ' + names[i] + ' \
+            </a> \
+          </li>';
+      previous += '/' + names[i];
+    }
+
+    breadcrumbHtml += ' \
+        <li class="breadcrumb-item active" aria-current="page"> \
+          ' + names[names.length - 1] + ' \
+        </li>';
+
+    $('#realm-breadcrumb').html(breadcrumbHtml);
+
+    $('#realm-breadcrumb a').click(function() {
+      var name = $(this).attr('data-breadcrumb');
+      if (name == "realm")
+        displayRealm();
+      else
+        displayFamily(name);
+    });
+  }
+
+  function connectAllATags() {
+    $('a.family-link').click(function() {
+      var name = $(this).attr('data-family');
+      displayFamily(name);
+    });
+  }
+
+  // --- JSON Traversal Functions ----------------------------------------- //
+
+  // Expects a name like 'greatFamily/minorFamily/pettyFamily'.
+  function findFamilyFromData(name) {
+    names = name.split('/');
+
+    family = findFamily(names.shift(), nobility);
+
+    while(names.length != 0) {
+      latestName = names.shift();
+      if (family.vassals != undefined)
+        latestFamily = findFamily(latestName, family.vassals);
+      if (latestFamily == null && family.knights != undefined)
+        latestFamily = findFamily(latestName, family.knights);
+      family = latestFamily;
+    }
+
+    return family;
+  }
+
+  function makeDataFromFamily(family, families) {
+    for (var i = 0; i < families.length; i++) {
+      var f = families[i];
+      if (f.name == family.name) {
+        return f.name;
+      } else {
+        var retv = makeDataFromFamily(family, f.vassals);
+        if (retv != null)
+          return f.name + '/' + retv;
+
+        var retk = makeDataFromFamily(family, f.knights);
+        if (retk != null)
+          return f.name + '/' + retk;
+      }
+    }
+    return null;
+  }
+
+  function makeDataFromName(family, families) {
+    for (var i = 0; i < families.length; i++) {
+      var f = families[i];
+      if (f.name == family) {
+        return f.name;
+      } else {
+        var retv = makeDataFromName(family, f.vassals);
+        if (retv != null)
+          return f.name + '/' + retv;
+
+        var retk = makeDataFromName(family, f.knights);
+        if (retk != null)
+          return f.name + '/' + retk;
+      }
+    }
+    return null;
+  }
+
+  // Find the given family within an array of families.
+  function findFamily(family, families) {
+    for (var i = 0; i < families.length; i++) {
+      if (families[i]["name"] == family) {
+        return families[i];
+        break;
+      }
+    }
+    return null;
+  }
+
+  function findLeader(family) {
+    for (var i = 0; i < family.persons.length; i++) {
+      if (family.persons[i].leader == true)
+        return family.persons[i];
+    }
+    return null;
+  }
+
+  function getFullTitle(noble) {
+    string = '';
+    string += noble.title + ' ';
+    if (noble.pre_nickname != undefined)
+      string += '"' + noble.pre_nickname + '" ';
+    string += noble.firstname + ' ';
+    if (noble.post_nickname != undefined)
+      string += '"' + noble.post_nickname + '" ';
+    string += noble.family_name;
+    return string;
+  }
+
+  function getFullName(courtier) {
+    string = '';
+    if (courtier.pre_nickname != undefined)
+      string += '"' + courtier.pre_nickname + '" ';
+    string += courtier.firstname + ' ';
+    if (courtier.post_nickname != undefined)
+      string += '"' + courtier.post_nickname + '" ';
+    return string.substring(0, string.length - 1);
+  }
+
+  // --- Utility Functions ------------------------------------------------ //
+  function capitalise(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1)
+  }
+</script>
+{% endblock %}

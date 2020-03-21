@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="overlay" style="display:none;">
+  <div class="spinner"></div>
+  <br/>
+  Generating...
+</div>
+
+<div class="jumbotron">
+  <div class="container text-center">
+    <h1 class="display-3"><b>The Realm Generator</b></h1>
+    <h5>You want realms? You want nobles, courtiers, factions? You want intrigue, hierarchies, kings, lords, knights left and right, whatever? You want it? You really want it? Well, YOU GOT IT, BUD.</h5>
+    <p>Check out the source code if you want to, <a href="https://github.com/ploopyco/realm-generator">right here</a>.</p>
+    <p>Although this is free to use, <a href="/donate">please consider supporting the creators!</a></p>
+  </div>
+</div>
+
+<div class="container text-center">
+  <form id="generate-form" action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="row my-4">
+      <div class="col-md">
+        <h4><b>How many noble families do you want?</b></h4>
+        {{ form.great_families.label }}
+        <br>
+        {{ form.great_families(class="form-control families-input") }}
+        {% for error in form.great_families.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+        {{ form.minor_families.label }}
+        <br>
+        {{ form.minor_families(class="form-control families-input") }}
+        {% for error in form.minor_families.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+        {{ form.knights.label }}
+        <br>
+        {{ form.knights(class="form-control families-input") }}
+        {% for error in form.knights.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+        <p id="noble-limit-warning">Make sure that these add up to less than {{ noble_limit }}.</p>
+      </div>
+      <div class="col-md">
+        <h4><b>How many factions do you want?</b></h4>
+        {{ form.powerful_factions.label }}
+        <br>
+        {{ form.powerful_factions(class="form-control") }}
+        {% for error in form.powerful_factions.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+        {{ form.weak_factions.label }}
+        <br>
+        {{ form.weak_factions(class="form-control") }}
+        {% for error in form.weak_factions.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+      </div>
+      <div class="col-md">
+        <h4><b>How many events do you want to kick off the realm with?</b></h4>
+        {{ form.start_noble_events.label }}
+        <br>
+        {{ form.start_noble_events(class="form-control") }}
+        {% for error in form.start_noble_events.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+        {{ form.start_courtier_events.label }}
+        <br>
+        {{ form.start_courtier_events(class="form-control") }}
+        {% for error in form.start_courtier_events.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+        {{ form.start_family_events.label }}
+        <br>
+        {{ form.start_family_events(class="form-control") }}
+        {% for error in form.start_family_events.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        <br>
+        <p>Don't add too many events, or it'll take a long time to generate a realm.</p>
+      </div>
+    </div>
+    <div class="row my-4">
+      <div class="col-md">
+        <h4><b>What kind of noble titles do you want?</b></h4>
+        {% for subfield in form.titles %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
+        {% for error in form.titles.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="col-md">
+        <h4><b>What kind of names do you want the noble realms to have?</b></h4>
+        {% for subfield in form.realms %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
+        {% for error in form.realms.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="container my-2">
+      {{ form.submit(class="form-control btn-lg btn-primary") }}
+    </div>
+  </form>
+
+  <div class="container my-5">
+    <h5>Want to continue an adventure in a previous realm?</h5>
+    <a class="btn btn-secondary btn-lg" href="/load" role="button">Load a Prior Realm</a>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(document).ready(function() {
+    $('#generate-form').submit(function(){
+      $('#overlay').fadeIn();
+      return;
+    });
+
+    $('.families-input').on('input',function(e){
+      var x = 0;
+      $('.families-input').each(function() {
+        x += parseInt($(this).val());
+      });
+
+      if (x > {{ noble_limit }})
+        $("#noble-limit-warning").css("color", "red");
+      else
+        $("#noble-limit-warning").css("color", "black");
+    });
+  });
+</script>
+{% endblock %}
