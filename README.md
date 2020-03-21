@@ -20,3 +20,7 @@ Building the code is easy enough. Assuming the use of Python 3, check out the co
 And, you're running. Easy peasy.
 
 Pull requests are welcome.
+
+## A few notes on names
+
+In general, names were chosen that were easy to pronounce for a North American English native speaker. Furthermore, a lot of guesses were made about things that have to do with foreign historical civilisations; mistakes are certain to have been made.
