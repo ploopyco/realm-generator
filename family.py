@@ -245,7 +245,8 @@ def create_nobility(
         h = Family(name, PETTY_FAMILY, titles, family_realm_name)
         liege = random.choice(nobility)
 
-        if random.random() > great_houses / (great_houses + minor_houses):
+        if (random.random() > great_houses / (great_houses + minor_houses) and
+                len(liege.vassals) > 0):
             minor_liege = random.choice(liege.vassals)
             minor_liege.knights.append(h)
         else:

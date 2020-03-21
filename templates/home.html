@@ -20,6 +20,12 @@
 <div class="container text-center">
   <form id="generate-form" action="" method="post" novalidate>
     {{ form.hidden_tag() }}
+    <div class="container my-5">
+      {{ form.submit(class="form-control btn-lg btn-primary") }}
+    </div>
+    <div class="container my-5">
+      <h3>Or, customize your realm...</h3>
+    </div>
     <div class="row my-4">
       <div class="col-md">
         <h4><b>How many noble families do you want?</b></h4>
@@ -116,9 +122,6 @@
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
       </div>
-    </div>
-    <div class="container my-2">
-      {{ form.submit(class="form-control btn-lg btn-primary") }}
     </div>
   </form>
 

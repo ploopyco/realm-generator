@@ -12,9 +12,9 @@ from .word.name.male import male_names
 
 class Faction():
     def __init__(self, nobility, powerful=False):
-        great_region = random.choice(nobility)
-        region = random.choice(great_region.vassals).name
-        self.region = region
+        self.region = random.choice(nobility)
+        if len(self.region.vassals) > 0:
+            self.region = random.choice(self.region.vassals).name
 
         self.name = self._generate_name()
         self.events = []

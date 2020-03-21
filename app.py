@@ -201,7 +201,7 @@ class GenerateForm(flask_wtf.FlaskForm):
         default='House'
     )
 
-    submit = wtforms.SubmitField('Generate')
+    submit = wtforms.SubmitField('Generate A Realm Now!')
 
 
 class RealmEncoder(json.JSONEncoder):
