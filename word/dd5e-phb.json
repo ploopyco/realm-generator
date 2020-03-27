@@ -1,0 +1,27 @@
+{
+    "dataset" : "D&D 5E",
+    "data" :
+    [
+        {
+            "type" : "races",
+            "id" : "dd-phb",
+            "name" : "D&D PHB",
+            "list" : [
+                "Dragonborn",
+                "Dwarf (Hill)",
+                "Dwarf (Mountain}",
+                "Elf (Drow)",
+                "Elf (High)",
+                "Elf (Wood)",
+                "Gnome (Forest)",
+                "Gnome (Rock)",
+                "Half-Elf",
+                "Half-Orc",
+                "Halfling (Lightfoot)",
+                "Halfling (Stout)",
+                "Human",
+                "Tiefling"
+            ]
+        }
+    ]
+}

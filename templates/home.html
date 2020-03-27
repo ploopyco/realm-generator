@@ -123,6 +123,15 @@
         {% endfor %}
       </div>
     </div>
+    <div class="row my-4">
+      <div class="col-md">
+        <h4><b>What sources of races or ethnicities do you want?</b></h4>
+        {{form.races}}
+        {% for error in form.races.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+    </div>
   </form>
 
   <div class="container my-5">

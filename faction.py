@@ -11,7 +11,7 @@ from .word.name.male import male_names
 
 
 class Faction():
-    def __init__(self, nobility, powerful=False):
+    def __init__(self, data, nobility, powerful=False):
         self.region = random.choice(nobility)
         if len(self.region.vassals) > 0:
             self.region = random.choice(self.region.vassals).name
@@ -38,10 +38,10 @@ class Faction():
                 num_of_mems
             )
 
-        self.persons.append(person.Person(leader=True))
+        self.persons.append(person.Person(data, leader=True))
 
         for _ in range(num_of_mems - 1):
-            mem = person.Person()
+            mem = person.Person(data)
             mem.leader_relation = "follower"
             self.persons.append(mem)
 
@@ -87,15 +87,15 @@ class Faction():
         return name
 
 
-def create_factions(powerful_factions, weak_factions, nobility):
+def create_factions(data, powerful_factions, weak_factions, nobility):
     factions = []
 
     for _ in range(powerful_factions):
-        f = Faction(nobility, powerful=True)
+        f = Faction(data, nobility, powerful=True)
         factions.append(f)
 
     for _ in range(weak_factions):
-        f = Faction(nobility)
+        f = Faction(data, nobility)
         factions.append(f)
 
     return factions

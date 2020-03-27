@@ -10,7 +10,6 @@ from .word.adjective.standard import adjectives
 from .word.animal import animals
 from .word.family import male_family, female_family
 from .word.cognomen import cognomens
-from .word.race import races
 from .word.title import titles as titles_library
 
 MAX_AGE = 99
@@ -23,6 +22,7 @@ ADULT_AGE = 20
 class Person():
     def __init__(
         self,
+        data,
         race=None,
         leader=False,
         max_age=MAX_AGE,
@@ -46,7 +46,7 @@ class Person():
         ) = self._generate_name()
 
         if race is None:
-            self.race = random.choice(races)
+            self.race = random.choice(data['races'])
         else:
             self.race = race
 
@@ -109,6 +109,7 @@ class Person():
 class Noble(Person):
     def __init__(
         self,
+        data,
         family_name,
         rank,
         race=None,
@@ -116,7 +117,7 @@ class Noble(Person):
         max_age=MAX_AGE,
         titles=None
     ):
-        super().__init__(race=race, leader=leader, max_age=max_age)
+        super().__init__(data, race=race, leader=leader, max_age=max_age)
 
         self.rank = rank
         self.family_name = family_name
