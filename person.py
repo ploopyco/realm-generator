@@ -10,7 +10,6 @@ from .word.adjective.standard import adjectives
 from .word.animal import animals
 from .word.family import male_family, female_family
 from .word.cognomen import cognomens
-from .word.title import titles as titles_library
 
 MAX_AGE = 99
 MALE = "male"
@@ -114,8 +113,7 @@ class Noble(Person):
         rank,
         race=None,
         leader=False,
-        max_age=MAX_AGE,
-        titles=None
+        max_age=MAX_AGE
     ):
         super().__init__(data, race=race, leader=leader, max_age=max_age)
 
@@ -127,9 +125,7 @@ class Noble(Person):
         else:
             self.leader_relation = None
 
-        if titles is None:
-            titles = titles_library[0]
-        self.title = self._get_title(titles)
+        self.title = self._get_title(data['titles'])
 
     def get_full_name(self):
         name = self.firstname
@@ -140,7 +136,7 @@ class Noble(Person):
         name = name + " " + self.family_name
         return name
 
-    def set_spouse(self, leader, titles):
+    def set_spouse(self, data, leader):
         if random.random() * 100 > 10:
             if leader.sex == MALE:
                 self.leader_relation = "wife"
@@ -163,7 +159,7 @@ class Noble(Person):
         if self.age < ADULT_AGE:
             self.age = ADULT_AGE
 
-        self.title = self._get_title(titles)
+        self.title = self._get_title(data['titles'])
 
     def get_full_title(self):
         return self.title + " " + self.get_first_name()

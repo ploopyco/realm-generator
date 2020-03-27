@@ -1,0 +1,19 @@
+{
+    "dataset" : "Norse",
+    "data" :
+    [
+        {
+            "type" : "titles",
+            "id" : "norse",
+            "name" : "Norse (Konge, Jarl, Huskarl)",
+            "monarch" : "Konge",
+            "monarchess" : "Dronning",
+            "heir" : "Prins",
+            "heiress" : "Prinsesse",
+            "lord" : "Jarl",
+            "lordess" : "Hoffdame",
+            "knight" : "Huskarl",
+            "knightess" : "Dame"
+        }
+    ]
+}

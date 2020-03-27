@@ -1,0 +1,84 @@
+{
+    "dataset" : "base",
+    "data" :
+    [
+        {
+            "type" : "titles",
+            "id" : "british",
+            "name" : "British (King, Lord, Sir)",
+            "monarch" : "King",
+            "monarchess" : "Queen",
+            "heir" : "Prince",
+            "heiress" : "Princess",
+            "lord" : "Lord",
+            "lordess" : "Lady",
+            "knight" : "Sir",
+            "knightess" : "Dame"
+        },
+        {
+            "type" : "titles",
+            "id" : "roman",
+            "name" : "Roman (Emperor, Dominus, Consulus)",
+            "monarch": "Emperor",
+            "monarchess": "Empress",
+            "heir": "Imperial Prince",
+            "heiress": "Imperial Princess",
+            "lord": "Dominus",
+            "lordess": "Domina",
+            "knight": "Consulus",
+            "knightess": "Consula"
+        },
+        {
+            "type" : "titles",
+            "id" : "byzantine",
+            "name" : "Byzantine (Basileus, Despot, Sebastor)",
+            "monarch": "Basileus",
+            "monarchess": "Basilinna",
+            "heir": "Basileus Minorus",
+            "heiress": "Basilinna Minorus",
+            "lord": "Despot",
+            "lordess": "Despotes",
+            "knight": "Sebastor",
+            "knightess": "Sebastess"
+        },
+        {
+            "type" : "titles",
+            "id" : "russian",
+            "name" : "Russian (Tsar, Count, Baron)",
+            "monarch": "Tsar",
+            "monarchess": "Tsarina",
+            "heir": "Tsarevich",
+            "heiress": "Tsarevna",
+            "lord": "Count",
+            "lordess": "Countess",
+            "knight": "Baron",
+            "knightess": "Baroness"
+        },
+        {
+            "type" : "titles",
+            "id" : "sanskrit",
+            "name" : "Sanskrit (Maharaja, Amir, Sardar)",
+            "monarch": "Maharaja",
+            "monarchess": "Maharani",
+            "heir": "Raja Kumar",
+            "heiress": "Rani Kumari",
+            "lord": "Amir",
+            "lordess": "Amiri",
+            "knight": "Sardar",
+            "knightess": "Sardari"
+        },
+        {
+            "type" : "titles",
+            "id" : "persian",
+            "name" : "Persian (Shah, Marzban, Istandar)",
+            "monarch": "Shah",
+            "monarchess": "Shahbanu",
+            "heir": "Shahpur",
+            "heiress": "Shahdokht",
+            "lord": "Marzban",
+            "lordess": "Marzbanu",
+            "knight": "Istandar",
+            "knightess": "Istandarbanu"
+        }
+    ]
+}

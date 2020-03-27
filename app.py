@@ -20,7 +20,6 @@ from .word.adjective.standard import adjectives
 from .word.animal import animals
 from .word.cognomen import cognomens
 from .word.motto import mottos
-from .word.title import titles
 from .word.seat import seat_suffixes
 
 # Some good default values
@@ -82,12 +81,11 @@ def generate_realm(form):
     start_courtier_events = form.start_courtier_events.data
     start_family_events = form.start_family_events.data
 
-    chosen_titles = form.titles.data
-
     family_realm_name = form.realms.data
 
     data = {
-        'races' : []
+        'races' : [],
+        'titles' : {}
         }
 
     jsonfiles = glob.glob("word/*.json")
@@ -98,6 +96,8 @@ def generate_realm(form):
             for d in obj['data']:
                 if d['type'] == 'races' and d['id'] in form.races.data:
                     data['races'].extend(d['list'])
+                if d['type'] == 'titles' and d['id'] in form.titles.data:
+                    data['titles'] = d
 
     data['races'] = list(set(data['races']))
 
@@ -112,14 +112,11 @@ def generate_realm(form):
     random.shuffle(mottos)
     random.shuffle(seat_suffixes)
 
-    chosen_titles_d = [d for d in titles if d["type"] == chosen_titles][0]
-
     nobility = family.create_nobility(
         data,
         great_families,
         minor_families,
         knights,
-        chosen_titles_d,
         family_realm_name
     )
 
@@ -151,6 +148,7 @@ class GenerateForm(flask_wtf.FlaskForm):
     datasets = []
     dataset_names = []
     race_data = []
+    title_data = []
     jsonfiles = glob.glob("word/*.json")
 
     for f in jsonfiles:
@@ -169,10 +167,16 @@ class GenerateForm(flask_wtf.FlaskForm):
         for d in dset['data']:
             if d['type'] == 'races':
                 race_data.append(d)
+            if d['type'] == 'titles':
+                title_data.append(d)
 
     race_choices = []
     race_choices.extend([(s['id'], s['name']) for s in race_data])
-    race_choices.sort(key=lambda r: r[0])
+    race_choices.sort(key=lambda r: r[1])
+
+    title_choices = []
+    title_choices.extend([(s['id'], s['name']) for s in title_data])
+    title_choices.sort(key=lambda r: r[1])
 
     great_families = wtforms.IntegerField(
         'Great Noble Families',
@@ -219,15 +223,8 @@ class GenerateForm(flask_wtf.FlaskForm):
 
     titles = wtforms.RadioField(
         'Title Stylings',
-        choices=[
-            ('british', 'British (King, Lord, Sir)'),
-            ('roman', 'Roman (Emperor, Dominus, Consulus)'),
-            ('byzantine', 'Byzantine (Basileus, Despot, Sebastor)'),
-            ('russian', 'Russian (Tsar, Count, Baron)'),
-            ('sanskrit', 'Sanskrit (Maharaja, Amir, Sardar)'),
-            ('persian', 'Persian (Shah, Marzban, Istandar)')
-        ],
-        default='british'
+        choices=title_choices,
+        default=title_choices[0][0]
     )
 
     realms = wtforms.RadioField(
