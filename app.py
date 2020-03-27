@@ -243,7 +243,8 @@ class GenerateForm(flask_wtf.FlaskForm):
 
     races = wtforms.SelectMultipleField(
         'Races',
-        choices=race_choices
+        choices=race_choices,
+        default=[c[0] for c in race_choices]
     )
 
     submit = wtforms.SubmitField('Generate A Realm Now!')
