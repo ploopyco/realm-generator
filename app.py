@@ -81,11 +81,10 @@ def generate_realm(form):
     start_courtier_events = form.start_courtier_events.data
     start_family_events = form.start_family_events.data
 
-    family_realm_name = form.realms.data
-
     data = {
         'races' : [],
-        'titles' : {}
+        'titles' : {},
+        'realm' : {}
         }
 
     jsonfiles = glob.glob("word/*.json")
@@ -96,8 +95,10 @@ def generate_realm(form):
             for d in obj['data']:
                 if d['type'] == 'races' and d['id'] in form.races.data:
                     data['races'].extend(d['list'])
-                if d['type'] == 'titles' and d['id'] in form.titles.data:
+                elif d['type'] == 'titles' and d['id'] in form.titles.data:
                     data['titles'] = d
+                elif d['type'] == 'realm' and d['id'] in form.realms.data:
+                    data['realm'] = d
 
     data['races'] = list(set(data['races']))
 
@@ -116,8 +117,7 @@ def generate_realm(form):
         data,
         great_families,
         minor_families,
-        knights,
-        family_realm_name
+        knights
     )
 
     factions = faction.create_factions(
@@ -149,6 +149,7 @@ class GenerateForm(flask_wtf.FlaskForm):
     dataset_names = []
     race_data = []
     title_data = []
+    realm_data = []
     jsonfiles = glob.glob("word/*.json")
 
     for f in jsonfiles:
@@ -162,13 +163,15 @@ class GenerateForm(flask_wtf.FlaskForm):
                 datasets.append(obj)
                 dataset_names.append(obj['dataset'])
 
-    # separated from input to allow for dynamic list building in future
+    # separated from load to allow for dynamic list building in future
     for dset in datasets:
         for d in dset['data']:
             if d['type'] == 'races':
                 race_data.append(d)
             if d['type'] == 'titles':
                 title_data.append(d)
+            if d['type'] == 'realm':
+                realm_data.append(d)
 
     race_choices = []
     race_choices.extend([(s['id'], s['name']) for s in race_data])
@@ -177,6 +180,10 @@ class GenerateForm(flask_wtf.FlaskForm):
     title_choices = []
     title_choices.extend([(s['id'], s['name']) for s in title_data])
     title_choices.sort(key=lambda r: r[1])
+
+    realm_choices = []
+    realm_choices.extend([(s['id'], s['desc']) for s in realm_data])
+    realm_choices.sort(key=lambda r: r[1])
 
     great_families = wtforms.IntegerField(
         'Great Noble Families',
@@ -229,22 +236,14 @@ class GenerateForm(flask_wtf.FlaskForm):
 
     realms = wtforms.RadioField(
         'Family Realm Names',
-        choices=[
-            ('House', 'House (i.e. The Great House of Whatever)'),
-            ('Hearth', 'Hearth (i.e. The Great Hearth of Whatever)'),
-            ('Domain', 'Domain (i.e. The Great Domain of Whatever)'),
-            ('Clan', 'Clan (i.e. The Great Clan of Whatever)'),
-            ('Tribe', 'Tribe (i.e. The Great Tribe of Whatever)'),
-            ('Dynasty', 'Dynasty (i.e. The Great Dynasty of Whatever)'),
-            ('Fastness', 'Fastness (i.e. The Great Fastness of Whatever)')
-        ],
-        default='House'
+        choices=realm_choices,
+        default='house'
     )
 
     races = wtforms.SelectMultipleField(
         'Races',
         choices=race_choices,
-        default=[c[0] for c in race_choices]
+        default=[c[0] for c in race_choices if c[0][:2] == 'dd']
     )
 
     submit = wtforms.SubmitField('Generate A Realm Now!')

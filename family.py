@@ -19,7 +19,7 @@ PETTY_FAMILY = "petty"
 
 
 class Family():
-    def __init__(self, data, name, rank, family_realm_name=None):
+    def __init__(self, data, name, rank):
         self.name = name
         self.vassals = []
         self.knights = []
@@ -32,10 +32,8 @@ class Family():
         self.persons = self._instantiate_persons(data)
         self.courtiers = self._instantiate_courtiers(data)
 
-        if family_realm_name is None:
-            self.family_realm_name = "House"
-        else:
-            self.family_realm_name = family_realm_name
+        self.family_realm_name = data['realm']['name']
+        self.family_realm_plural = data['realm']['plural']
 
     def get_leader(self):
         h = [m for m in self.persons if m.head is True]
@@ -217,8 +215,7 @@ def create_nobility(
     data,
     great_houses,
     minor_houses,
-    landed_knights,
-    family_realm_name
+    landed_knights
 ):
 
     nobility = []
@@ -226,23 +223,23 @@ def create_nobility(
     noble_names_cp = copy.deepcopy(noble_names)
 
     royalty = noble_names_cp.pop()
-    royal_house = Family(data, royalty, ROYAL_FAMILY, family_realm_name)
+    royal_house = Family(data, royalty, ROYAL_FAMILY)
     nobility.append(royal_house)
 
     for _ in range(great_houses - 1):
         name = noble_names_cp.pop()
-        h = Family(data, name, GREAT_FAMILY, family_realm_name)
+        h = Family(data, name, GREAT_FAMILY)
         nobility.append(h)
 
     for _ in range(minor_houses):
         name = noble_names_cp.pop()
-        h = Family(data, name, MINOR_FAMILY, family_realm_name)
+        h = Family(data, name, MINOR_FAMILY)
         liege = random.choice(nobility)
         liege.vassals.append(h)
 
     for _ in range(landed_knights):
         name = noble_names_cp.pop()
-        h = Family(data, name, PETTY_FAMILY, family_realm_name)
+        h = Family(data, name, PETTY_FAMILY)
         liege = random.choice(nobility)
 
         if (random.random() > great_houses / (great_houses + minor_houses) and

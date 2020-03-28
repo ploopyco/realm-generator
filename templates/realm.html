@@ -138,7 +138,7 @@
           <div class="container mb-5"> \
             <button data-family="' + royalFamily.name + '" type="button" class="family btn btn-primary btn-block btn-lg">The Royal ' + royalFamily.family_realm_name + ' of ' + royalFamily.name + '</button> \
           </div> \
-          <h3>The Great ' + royalFamily.family_realm_name + 's</h3> \
+          <h3>The Great ' + royalFamily.family_realm_plural + '</h3> \
           <div id="great-families" class="container mb-5">';
 
     for (var i = 0; i < nobility.length; i++) {
@@ -403,7 +403,7 @@
   }
 
   function makeVassalsHtml(family) {
-    var html = '<h3>Vassal Houses</h3>';
+    var html = '<h3>Vassal ' + family.family_realm_plural + '</h3>';
     for (var i = 0; i < family.vassals.length; i++) {
       var vassal = family.vassals[i];
       html += ' \
