@@ -3,6 +3,7 @@ import random
 import copy
 
 from . import person
+from .alignment import get_alignment
 
 from .word.name.noble import noble_names
 from .word.motto import mottos
@@ -28,12 +29,14 @@ class Family():
         self.motto = random.choice(mottos)
         self.reputation = random.choice(adjectives)
 
-        self.seat = self._generate_seat()
-        self.persons = self._instantiate_persons(data)
-        self.courtiers = self._instantiate_courtiers(data)
+        self.alignment, self.alignment_print = get_alignment(data)
 
         self.family_realm_name = data['realm']['name']
         self.family_realm_plural = data['realm']['plural']
+
+        self.seat = self._generate_seat()
+        self.persons = self._instantiate_persons(data)
+        self.courtiers = self._instantiate_courtiers(data)
 
     def get_leader(self):
         h = [m for m in self.persons if m.head is True]
@@ -146,6 +149,7 @@ class Family():
             data,
             self.name,
             self.rank,
+            alignment=self.alignment,
             leader=True
         )
         persons.append(leader)
@@ -155,6 +159,7 @@ class Family():
                 data,
                 self.name,
                 self.rank,
+                alignment=self.alignment,
                 race=leader.race,
                 max_age=leader.age,
             )
@@ -173,6 +178,7 @@ class Family():
                 data,
                 self.name,
                 self.rank,
+                alignment=self.alignment,
                 race=leader.race,
                 max_age=leader.age,
             )

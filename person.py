@@ -2,6 +2,7 @@ import math
 import random
 
 from . import family
+from .alignment import get_alignment
 
 from .word.name.female import female_names
 from .word.name.male import male_names
@@ -23,6 +24,7 @@ class Person():
         self,
         data,
         race=None,
+        alignment=None,
         leader=False,
         max_age=MAX_AGE,
     ):
@@ -53,8 +55,14 @@ class Person():
             self.age = ADULT_AGE + math.floor(
                 random.random() * (max_age - ADULT_AGE)
             )
+            self.alignment = alignment
+            if alignment is None:
+                self.alignment_print = 'none'
+            else:
+                self.alignment_print = ' '.join(self.alignment)
         else:
             self.age = math.floor(random.random() * max_age)
+            self.alignment, self.alignment_print = get_alignment(data, bias=alignment)
 
     def get_first_name(self):
         name = self.firstname
@@ -111,11 +119,12 @@ class Noble(Person):
         data,
         family_name,
         rank,
+        alignment=None,
         race=None,
         leader=False,
         max_age=MAX_AGE
     ):
-        super().__init__(data, race=race, leader=leader, max_age=max_age)
+        super().__init__(data, race=race, alignment=alignment, leader=leader, max_age=max_age)
 
         self.rank = rank
         self.family_name = family_name

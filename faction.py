@@ -2,6 +2,7 @@ import math
 import random
 
 from . import person
+from .alignment import get_alignment
 
 from .word.name.faction import faction_prefixes, faction_suffixes
 from .word.animal import animals
@@ -22,6 +23,8 @@ class Faction():
         self.powerful = powerful
         self.reputation = random.choice(adjectives)
 
+        self.alignment, self.alignment_print = get_alignment(data)
+
         num_of_mems = 3 + math.floor(random.random() * 7)
 
         if self.powerful is True:
@@ -38,10 +41,10 @@ class Faction():
                 num_of_mems
             )
 
-        self.persons.append(person.Person(data, leader=True))
+        self.persons.append(person.Person(data, alignment=self.alignment, leader=True))
 
         for _ in range(num_of_mems - 1):
-            mem = person.Person(data)
+            mem = person.Person(data, alignment=self.alignment)
             mem.leader_relation = "follower"
             self.persons.append(mem)
 

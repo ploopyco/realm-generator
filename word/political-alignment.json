@@ -1,0 +1,89 @@
+{
+    "dataset" : "political",
+    "data" :
+    [
+        {
+            "type" : "alignment",
+            "id" : "eysenck",
+            "name" : "Political (Eysenck)",
+            "num_axes" : 2,
+            "axes" : [
+                { 
+                    "axis" : "Radicalism",
+                    "list" : [
+                        "Radical",
+                        "Centrist",
+                        "Conservative"
+                    ]
+                },
+                {
+                    "axis" : "Tender-Mindedness",
+                    "list": [
+                        "Authoritarian",
+                        "Centrist",
+                        "Democratic"
+                    ]
+                }
+            ]
+        },
+        {
+            "type" : "alignment",
+            "id" : "pol-2axis",
+            "name" : "Political (2-Axis)",
+            "num_axes" : 2,
+            "axes" : [
+                { 
+                    "axis" : "Economic",
+                    "list" : [
+                        "Left",
+                        "Center",
+                        "Right"
+                    ]
+                },
+                {
+                    "axis" : "Social",
+                    "list": [
+                        "Authoritarian",
+                        "Centrist",
+                        "Libertarian"
+                    ]
+                }
+            ]
+        },
+        {
+            "type" : "alignment",
+            "id" : "pol-3axis-econ",
+            "name" : "Political (3-Axis Economic)",
+            "num_axes" : 3,
+            "axes" : [
+                { 
+                    "axis" : "Division-Unification",
+                    "list" : [
+                        "Libertarian",
+                        "Liberal",
+                        "Nationalist",
+                        "Facist"
+                    ]
+                },
+                {
+                    "axis" : "Concentration-Diffusion",
+                    "list": [
+                        "Imperialist",
+                        "Capitalist",
+                        "Socialist",
+                        "Communist"
+                    ]
+                },
+                {
+                    "axis" : "Generalization-Specialization",
+                    "list": [
+                        "Feudalist",
+                        "Corporatist",
+                        "Republican",
+                        "Equalitarian"
+                    ]
+                }
+            ]
+        }
+    ]
+}

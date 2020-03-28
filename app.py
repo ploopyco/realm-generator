@@ -84,7 +84,8 @@ def generate_realm(form):
     data = {
         'races' : [],
         'titles' : {},
-        'realm' : {}
+        'realm' : {},
+        'alignment' : {}
         }
 
     jsonfiles = glob.glob("word/*.json")
@@ -99,6 +100,8 @@ def generate_realm(form):
                     data['titles'] = d
                 elif d['type'] == 'realm' and d['id'] in form.realms.data:
                     data['realm'] = d
+                elif d['type'] == 'alignment' and d['id'] in form.align.data:
+                    data['alignment'] = d
 
     data['races'] = list(set(data['races']))
 
@@ -150,6 +153,7 @@ class GenerateForm(flask_wtf.FlaskForm):
     race_data = []
     title_data = []
     realm_data = []
+    align_data = []
     jsonfiles = glob.glob("word/*.json")
 
     for f in jsonfiles:
@@ -168,10 +172,12 @@ class GenerateForm(flask_wtf.FlaskForm):
         for d in dset['data']:
             if d['type'] == 'races':
                 race_data.append(d)
-            if d['type'] == 'titles':
+            elif d['type'] == 'titles':
                 title_data.append(d)
-            if d['type'] == 'realm':
+            elif d['type'] == 'realm':
                 realm_data.append(d)
+            elif d['type'] == 'alignment':
+                align_data.append(d)
 
     race_choices = []
     race_choices.extend([(s['id'], s['name']) for s in race_data])
@@ -184,6 +190,10 @@ class GenerateForm(flask_wtf.FlaskForm):
     realm_choices = []
     realm_choices.extend([(s['id'], s['desc']) for s in realm_data])
     realm_choices.sort(key=lambda r: r[1])
+
+    align_choices = []
+    align_choices.extend([(s['id'], s['name']) for s in align_data])
+    align_choices.sort(key=lambda r: r[1])
 
     great_families = wtforms.IntegerField(
         'Great Noble Families',
@@ -244,6 +254,12 @@ class GenerateForm(flask_wtf.FlaskForm):
         'Races',
         choices=race_choices,
         default=[c[0] for c in race_choices if c[0][:2] == 'dd']
+    )
+
+    align = wtforms.RadioField(
+        'Alignments',
+        choices=align_choices,
+        default='none'
     )
 
     submit = wtforms.SubmitField('Generate A Realm Now!')

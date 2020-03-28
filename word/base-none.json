@@ -1,0 +1,28 @@
+{
+    "dataset" : "base",
+    "data" :
+    [
+        {
+            "type" : "races",
+            "id" : "none",
+            "name" : "None",
+            "list" : [
+                "none"
+            ]
+        },
+        {
+            "type" : "alignment",
+            "id" : "none",
+            "name" : "None",
+            "num_axes" : 1,
+            "axes" : [
+                { 
+                    "axis" : "Alignment",
+                    "list" : [
+                        "none"
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "dataset" : "WFRP",
+    "data" :
+    [
+        {
+            "type" : "alignment",
+            "id" : "wfrp",
+            "name" : "WFRP Alignments",
+            "num_axes" : 1,
+            "axes" : [
+                { 
+                    "axis" : "Alignment",
+                    "list" : [
+                        "Order",
+                        "Good",
+                        "Neutral",
+                        "Evil",
+                        "Chaos"
+                    ]
+                }
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "wfrp-races-imperial",
+            "name" : "WFRP Imperial",
+            "list" : [
+                "Averlander",
+                "Reiklander",
+                "Stirlander",
+                "Talabeclander",
+                "Wissenlander",
+                "Hochlander",
+                "Ostermarkian",
+                "Ostlander",
+                "Middenlander",
+                "Nordlander"
+            ]
+        }
+    ]
+}

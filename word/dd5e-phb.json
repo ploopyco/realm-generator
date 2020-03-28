@@ -22,6 +22,30 @@
                 "Human",
                 "Tiefling"
             ]
+        },
+        {
+            "type" : "alignment",
+            "id" : "dd5e",
+            "name" : "D&D Alignments",
+            "num_axes" : 2,
+            "axes" : [
+                {
+                    "axis" : "Law-Chaos",
+                    "list" : [
+                        "Lawful",
+                        "Neutral",
+                        "Chaotic"
+                    ]
+                },
+                { 
+                    "axis" : "Good-Evil",
+                    "list" : [
+                        "Good",
+                        "Neutral",
+                        "Evil"
+                    ]
+                }
+            ]
         }
     ]
 }

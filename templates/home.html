@@ -131,6 +131,19 @@
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
       </div>
+      <div class="col-md">
+        <h4><b>What alignment system do you want?</b></h4>
+        {% for subfield in form.align %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
+        {% for error in form.align.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
     </div>
   </form>
 

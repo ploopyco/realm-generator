@@ -204,6 +204,9 @@
         <h5><b>Ancestral Seat</b> - ' + family.seat + '</h5> \
         <h5><b>Reputation</b> - ' + family.reputation + '</h5> \
         <h5><b>Head of the Family</b> - ' + getFullTitle(findLeader(family)) + '</h5>';
+        if (family.alignment_print != "none") {
+          html += '<h5><b>Family Alignment</b> - ' + family.alignment_print + '</h5>';
+        }
 
     if (family.persons.length > 0)
       html += makePersonsHtml(family);
@@ -256,6 +259,9 @@
         <h5><b>Region</b> - <a class="family-link" href="#" data-family="' +
         makeDataFromName(faction.region, nobility) + '">' + faction.region + '</a></b> \
         <h5><b>Faction Leader</b> - ' + getFullName(findLeader(faction)) + '</h5>';
+        if (faction.alignment_print != 'none') {
+          html += '<h5><b>Faction Alignment</b> - ' + faction.alignment_print + '</h5>';
+        }
 
     if (faction.persons.length > 0)
       html += makeAgentsHtml(faction);
@@ -297,8 +303,14 @@
             <li>' +
             getFullTitle(person) + ', ' +
             person.sex + ', ' +
-            person.age + ' years old, ' +
-            person.race + ' - ' +
+            person.age + ' years old';
+        if (person.race != 'none') {
+          html += ', ' + person.race;
+        }
+        if (person.alignment_print != 'none') {
+          html += ', ' + person.alignment_print;
+        }
+        html += ' - ' +
             '<i>' + person.character + ' character, ' +
             person.past + ' past</i>';
       } else {
@@ -307,8 +319,15 @@
             getFullTitle(person) + ', ' +
             person.leader_relation + ' of the leader, ' +
             person.sex + ', ' +
-            person.age + ' years old, ' +
-            person.race + ' - ' +
+            person.age + ' years old';
+        if (person.race != 'none') {
+          html += ', ' +
+              person.race;
+        }
+        if (person.alignment_print != 'none') {
+          html += ', ' + person.alignment_print;
+        }
+        html += ' - ' +
             '<i>' + person.character + ' character, ' +
             person.past + ' past</i>';
       }
@@ -343,8 +362,15 @@
           getFullName(courtier) + ', ' +
           courtier.position + ', ' +
           courtier.sex + ', ' +
-          courtier.age + ' years old, ' +
-          courtier.race + ' - ' +
+          courtier.age + ' years old';
+      if (courtier.race != 'none') {
+        html += ', ' +
+            courtier.race;
+      }
+      if (courtier.alignment_print != 'none') {
+          html += ', ' + courtier.alignment_print;
+      }
+      html += ' - ' +
           '<i>' + courtier.character + ' character, ' +
           courtier.past + ' past</i>';
 
@@ -377,9 +403,15 @@
           <li>' +
           getFullName(agent) + ', ' +
           agent.sex + ', ' +
-          agent.age + ' years old, ' +
-          agent.race + ' - ' +
-          '<i>' + agent.character + ' character, ' +
+          agent.age + ' years old';
+      if (agent.race != 'none') {
+        html += ', ' + agent.race;
+      }
+      if (agent.alignment_print != 'none') {
+        html += ', ' + agent.alignment_print;
+      }
+      html += ' - \
+          <i>' + agent.character + ' character, ' +
           agent.past + ' past</i>';
 
       if (agent.events.length != 0) {
