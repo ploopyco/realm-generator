@@ -8,7 +8,6 @@ from .word.name.female import female_names
 from .word.name.male import male_names
 from .word.adjective.whimsical import whimsical_adjectives
 from .word.adjective.standard import adjectives
-from .word.family import male_family, female_family
 
 MAX_AGE = 99
 MALE = "male"
@@ -128,7 +127,7 @@ class Noble(Person):
         self.family_name = family_name
 
         if leader is False:
-            self.leader_relation = self._generate_relation()
+            self.leader_relation = self._generate_relation(data)
         else:
             self.leader_relation = None
 
@@ -182,11 +181,11 @@ class Noble(Person):
 
         return s
 
-    def _generate_relation(self):
+    def _generate_relation(self, data):
         if self.sex == MALE:
-            leader_relation = random.choice(male_family)
+            leader_relation = random.choice(data['family_m'])
         else:
-            leader_relation = random.choice(female_family)
+            leader_relation = random.choice(data['family_f'])
 
         return leader_relation
 

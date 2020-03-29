@@ -88,7 +88,9 @@ def generate_realm(form):
         'appointments' : [],
         'chiefs' : [],
         'councils' : [],
-        'cognomens' : []
+        'cognomens' : [],
+        'family_m' : [],
+        'family_f' : []
         }
 
     jsonfiles = glob.glob("word/*.json")
@@ -115,6 +117,10 @@ def generate_realm(form):
                     data['councils'].extend(d['list'])
                 elif d['type'] == 'cognomens':
                     data['cognomens'].extend(d['list'])
+                elif d['type'] == 'family_m':
+                    data['family_m'].extend(d['list'])
+                elif d['type'] == 'family_f':
+                    data['family_f'].extend(d['list'])
 
     data['races'] = list(set(data['races']))
     data['animals'] = list(set(data['animals']))
@@ -122,6 +128,8 @@ def generate_realm(form):
     data['chiefs'] = list(set(data['chiefs']))
     data['councils'] = list(set(data['councils']))
     data['cognomens'] = list(set(data['cognomens']))
+    data['family_m'] = list(set(data['family_m']))
+    data['family_f'] = list(set(data['family_f']))
 
     random.shuffle(noble_names)
     random.shuffle(male_names)
