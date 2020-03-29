@@ -4,8 +4,6 @@ import random
 from . import family
 from .alignment import get_alignment
 
-from .word.name.female import female_names
-
 MAX_AGE = 99
 MALE = "male"
 FEMALE = "female"
@@ -78,7 +76,7 @@ class Person():
         if self.sex == MALE:
             firstname = random.choice(data['names_male'])
         else:
-            firstname = random.choice(female_names)
+            firstname = random.choice(data['names_female'])
 
         post_nickname = None
         pre_nickname = None
@@ -144,7 +142,7 @@ class Noble(Person):
             if leader.sex == MALE:
                 self.leader_relation = "wife"
                 self.sex = FEMALE
-                self.firstname = random.choice(female_names)
+                self.firstname = random.choice(data['names_female'])
             else:
                 self.leader_relation = "husband"
                 self.sex = MALE
@@ -157,7 +155,7 @@ class Noble(Person):
             else:
                 self.leader_relation = "wife"
                 self.sex = FEMALE
-                self.firstname = random.choice(female_names)
+                self.firstname = random.choice(data['names_female'])
 
         if self.age < ADULT_AGE:
             self.age = ADULT_AGE
