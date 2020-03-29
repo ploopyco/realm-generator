@@ -5,7 +5,6 @@ from . import family
 from .alignment import get_alignment
 
 from .word.name.female import female_names
-from .word.name.male import male_names
 
 MAX_AGE = 99
 MALE = "male"
@@ -77,7 +76,7 @@ class Person():
 
     def _generate_name(self, data):
         if self.sex == MALE:
-            firstname = random.choice(male_names)
+            firstname = random.choice(data['names_male'])
         else:
             firstname = random.choice(female_names)
 
@@ -149,12 +148,12 @@ class Noble(Person):
             else:
                 self.leader_relation = "husband"
                 self.sex = MALE
-                self.firstname = random.choice(male_names)
+                self.firstname = random.choice(data['names_male'])
         else:
             if leader.sex == MALE:
                 self.leader_relation = "husband"
                 self.sex = MALE
-                self.firstname = random.choice(male_names)
+                self.firstname = random.choice(data['names_male'])
             else:
                 self.leader_relation = "wife"
                 self.sex = FEMALE

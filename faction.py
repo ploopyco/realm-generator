@@ -4,8 +4,6 @@ import random
 from . import person
 from .alignment import get_alignment
 
-from .word.name.male import male_names
-
 
 class Faction():
     def __init__(self, data, nobility, powerful=False):
@@ -64,7 +62,7 @@ class Faction():
             elif r > 0.33:
                 name = "{} of Saint {}".format(
                     random.choice(data['faction_prefixes']),
-                    random.choice(male_names)
+                    random.choice(data['names_male'])
                 )
             else:
                 name = "{} of {}".format(

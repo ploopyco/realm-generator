@@ -153,6 +153,13 @@
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
       </div>
+      <div class="col-md">
+        <h4><b>What sources of Male names do you want?</b></h4>
+        {{form.names_m}}
+        {% for error in form.names_m.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
     </div>
   </form>
 

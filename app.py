@@ -12,7 +12,6 @@ from . import faction
 from . import event
 
 from .word.name.female import female_names
-from .word.name.male import male_names
 
 # Some good default values
 GREAT_FAMILIES = 7
@@ -93,7 +92,8 @@ def generate_realm(form):
         'faction_prefixes' : [],
         'faction_suffixes' : [],
         'nicknames' : [],
-        'names_noble': []
+        'names_noble': [],
+        'names_male' : []
         }
 
     jsonfiles = glob.glob("word/*.json")
@@ -112,6 +112,8 @@ def generate_realm(form):
                     data['alignment'] = d
                 elif d['type'] == 'names_noble' and d['id'] in form.names_n.data:
                     data['names_noble'].extend(d['list'])
+                elif d['type'] == 'names_male' and d['id'] in form.names_m.data:
+                    data['names_male'].extend(d['list'])
                 elif d['type'] == 'animals':
                     data['animals'].extend(d['list'])
                 elif d['type'] == 'appointments':
@@ -157,8 +159,8 @@ def generate_realm(form):
     data['faction_suffixes'] = list(set(data['faction_suffixes']))
     data['nicknames'] = list(set(data['nicknames']))
     data['names_noble'] = list(set(data['names_noble']))
+    data['names_male'] = list(set(data['names_male']))
 
-    random.shuffle(male_names)
     random.shuffle(female_names)
 
     nobility = family.create_nobility(
@@ -200,6 +202,7 @@ class GenerateForm(flask_wtf.FlaskForm):
     realm_data = []
     align_data = []
     names_n_data = []
+    names_m_data = []
     jsonfiles = glob.glob("word/*.json")
 
     for f in jsonfiles:
@@ -226,6 +229,8 @@ class GenerateForm(flask_wtf.FlaskForm):
                 align_data.append(d)
             elif d['type'] == 'names_noble':
                 names_n_data.append(d)
+            elif d['type'] == 'names_male':
+                names_m_data.append(d)
 
     race_choices = []
     race_choices.extend([(s['id'], s['name']) for s in race_data])
@@ -246,6 +251,10 @@ class GenerateForm(flask_wtf.FlaskForm):
     names_n_choices = []
     names_n_choices.extend([(s['id'], s['name']) for s in names_n_data])
     names_n_choices.sort(key=lambda r: r[1])
+
+    names_m_choices = []
+    names_m_choices.extend([(s['id'], s['name']) for s in names_m_data])
+    names_m_choices.sort(key=lambda r: r[1])
 
     great_families = wtforms.IntegerField(
         'Great Noble Families',
@@ -318,6 +327,12 @@ class GenerateForm(flask_wtf.FlaskForm):
         'Noble Names',
         choices=names_n_choices,
         default=[c[0] for c in names_n_choices if c[0][:4] == 'base']
+    )
+
+    names_m = wtforms.SelectMultipleField(
+        'Male Names',
+        choices=names_m_choices,
+        default=[c[0] for c in names_m_choices if c[0][:4] == 'base']
     )
 
     submit = wtforms.SubmitField('Generate A Realm Now!')
