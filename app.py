@@ -17,7 +17,6 @@ from .word.name.male import male_names
 from .word.name.nickname import nick_names
 from .word.adjective.whimsical import whimsical_adjectives
 from .word.adjective.standard import adjectives
-from .word.animal import animals
 from .word.cognomen import cognomens
 from .word.motto import mottos
 from .word.seat import seat_suffixes
@@ -85,7 +84,8 @@ def generate_realm(form):
         'races' : [],
         'titles' : {},
         'realm' : {},
-        'alignment' : {}
+        'alignment' : {},
+        'animals' : []
         }
 
     jsonfiles = glob.glob("word/*.json")
@@ -102,6 +102,8 @@ def generate_realm(form):
                     data['realm'] = d
                 elif d['type'] == 'alignment' and d['id'] in form.align.data:
                     data['alignment'] = d
+                elif d['type'] == 'animals':
+                    data['animals'].extend(d['list'])
 
     data['races'] = list(set(data['races']))
 
@@ -112,7 +114,6 @@ def generate_realm(form):
     random.shuffle(nick_names)
     random.shuffle(whimsical_adjectives)
     random.shuffle(adjectives)
-    random.shuffle(animals)
     random.shuffle(mottos)
     random.shuffle(seat_suffixes)
 
@@ -132,11 +133,11 @@ def generate_realm(form):
 
     event_generator = event.EventGenerator(nobility, factions)
     for _ in range(start_noble_events):
-        event_generator.new_noble_event()
+        event_generator.new_noble_event(data)
     for _ in range(start_courtier_events):
-        event_generator.new_courtier_event()
+        event_generator.new_courtier_event(data)
     for _ in range(start_family_events):
-        event_generator.new_family_event()
+        event_generator.new_family_event(data)
 
     realm = {
         "nobility": nobility,

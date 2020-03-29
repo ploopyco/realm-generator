@@ -5,7 +5,6 @@ from . import person
 from .alignment import get_alignment
 
 from .word.name.faction import faction_prefixes, faction_suffixes
-from .word.animal import animals
 from .word.adjective.standard import adjectives
 from .word.adjective.whimsical import whimsical_adjectives
 from .word.name.male import male_names
@@ -17,7 +16,7 @@ class Faction():
         if len(self.region.vassals) > 0:
             self.region = random.choice(self.region.vassals).name
 
-        self.name = self._generate_name()
+        self.name = self._generate_name(data)
         self.events = []
         self.persons = []
         self.powerful = powerful
@@ -57,13 +56,13 @@ class Faction():
         if len(h) > 0:
             return h[0]
 
-    def _generate_name(self):
+    def _generate_name(self, data):
         if random.random() > 0.5:
             r = random.random()
             if r > 0.66:
                 name = "{} of the {}".format(
                     random.choice(faction_prefixes),
-                    random.choice(animals)
+                    random.choice(data['animals'])
                 )
             elif r > 0.33:
                 name = "{} of Saint {}".format(

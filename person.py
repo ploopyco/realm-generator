@@ -8,7 +8,6 @@ from .word.name.female import female_names
 from .word.name.male import male_names
 from .word.adjective.whimsical import whimsical_adjectives
 from .word.adjective.standard import adjectives
-from .word.animal import animals
 from .word.family import male_family, female_family
 from .word.cognomen import cognomens
 
@@ -44,7 +43,7 @@ class Person():
             self.pre_nickname,
             self.firstname,
             self.post_nickname,
-        ) = self._generate_name()
+        ) = self._generate_name(data)
 
         if race is None:
             self.race = random.choice(data['races'])
@@ -80,7 +79,7 @@ class Person():
             name = name + " \"" + self.post_nickname + "\""
         return name
 
-    def _generate_name(self):
+    def _generate_name(self, data):
         if self.sex == MALE:
             firstname = random.choice(male_names)
         else:
@@ -104,10 +103,10 @@ class Person():
                 random.choice(whimsical_adjectives).capitalize()
             )
         elif r < 4:
-            pre_nickname = random.choice(animals).capitalize()
+            pre_nickname = random.choice(data['animals']).capitalize()
         elif r < 5:
             post_nickname = "the {}".format(
-                random.choice(animals)
+                random.choice(data['animals'])
             )
 
         return pre_nickname, firstname, post_nickname

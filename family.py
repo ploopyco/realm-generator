@@ -8,7 +8,6 @@ from .alignment import get_alignment
 from .word.name.noble import noble_names
 from .word.motto import mottos
 from .word.adjective.standard import adjectives
-from .word.animal import animals
 from .word.appointment import appointments, chiefs, councils
 from .word.seat import seat_suffixes
 
@@ -34,7 +33,7 @@ class Family():
         self.family_realm_name = data['realm']['name']
         self.family_realm_plural = data['realm']['plural']
 
-        self.seat = self._generate_seat()
+        self.seat = self._generate_seat(data)
         self.persons = self._instantiate_persons(data)
         self.courtiers = self._instantiate_courtiers(data)
 
@@ -116,7 +115,7 @@ class Family():
                     return "{}/{}".format(f.name, rk)
         return None
 
-    def _generate_seat(self):
+    def _generate_seat(self, data):
         r = random.random()
         if r > 0.3:
             seat = "{} {}".format(
@@ -136,7 +135,7 @@ class Family():
             )
         else:
             seat = "{} {}".format(
-                random.choice(animals),
+                random.choice(data['animals']),
                 random.choice(seat_suffixes)
             )
 
