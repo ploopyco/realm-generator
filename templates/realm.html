@@ -59,11 +59,13 @@
   var realm = {{ realm|safe }};
   var nobility = null;
   var factions = null;
+  var feedback = null;
 
   $(document).ready(function() {
     if (realm != null) {
       nobility = realm.nobility;
       factions = realm.factions;
+      feedback = realm.feedback;
 
       displayRealm();
       $('#overlay').hide();
@@ -115,6 +117,7 @@
       realm = JSON.parse(data);
       nobility = realm.nobility;
       factions = realm.factions;
+      feedback = realm.feedback;
       displayRealm();
     });
   }
@@ -134,6 +137,16 @@
 
     var realmHtml = ' \
         <div class="container text-center"> \
+          <p>Generated ' + feedback.total_out + ' ' + royalFamily.family_realm_plural + ': '
+            + feedback.royal_out + ' Royal, ' + feedback.great_out + ' Great, ' + feedback.minor_out + ' Minor, ' + feedback.landed_out + ' Landed<br>';
+    
+    if (feedback.toomany == true) {
+      realmHtml += ' \
+          <b style="color:red">Requested ' + feedback.total_in + ' ' + royalFamily.family_realm_plural + ': '
+            + feedback.royal_in + ' Royal, ' + feedback.great_in + ' Great, ' + feedback.minor_in + ' Minor, ' + feedback.landed_in + ' Landed</b></p>';
+    }
+
+    realmHtml += ' \
           <h3>The Royal ' + royalFamily.family_realm_name + '</h3> \
           <div class="container mb-5"> \
             <button data-family="' + royalFamily.name + '" type="button" class="family btn btn-primary btn-block btn-lg">The Royal ' + royalFamily.family_realm_name + ' of ' + royalFamily.name + '</button> \

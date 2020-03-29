@@ -218,8 +218,43 @@ def create_nobility(
 ):
 
     nobility = []
+    toomany = False
 
     noble_names_cp = copy.deepcopy(data['names_noble'])
+
+    max_families = len(noble_names_cp)
+    max_great = max(max_families - 1, 0)
+    max_minor = max(max_great - great_houses, 0)
+    max_landed = max(max_minor - minor_houses, 0)
+
+    total_in = great_houses + minor_houses + landed_knights
+    great_houses_in = great_houses
+    minor_houses_in = minor_houses
+    landed_knights_in = landed_knights
+
+    if max_great < great_houses_in:
+        great_houses = max_great
+        toomany = True
+    if max_minor < minor_houses_in:
+        minor_houses = max_minor
+        toomany = True
+    if max_landed < landed_knights_in:
+        landed_knights = max_landed
+        toomany = True
+
+    created = {
+        'toomany' : toomany,
+        'total_in' : total_in,
+        'total_out' : 1 + great_houses + minor_houses + landed_knights,
+        'royal_in' : 1,
+        'royal_out' : 1,
+        'great_in' : great_houses_in,
+        'great_out' : great_houses,
+        'minor_in' : minor_houses_in,
+        'minor_out' : minor_houses,
+        'landed_in' : landed_knights_in,
+        'landed_out' : landed_knights
+    }
 
     royalty = noble_names_cp.pop()
     royal_house = Family(data, royalty, ROYAL_FAMILY)
@@ -248,7 +283,7 @@ def create_nobility(
         else:
             liege.knights.append(h)
 
-    return nobility
+    return nobility, created
 
 
 def all_families(nobility):

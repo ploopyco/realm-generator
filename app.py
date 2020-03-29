@@ -164,7 +164,7 @@ def generate_realm(form):
     data['names_male'] = list(set(data['names_male']))
     data['names_female'] = list(set(data['names_female']))
 
-    nobility = family.create_nobility(
+    nobility, feedback = family.create_nobility(
         data,
         great_families,
         minor_families,
@@ -187,6 +187,7 @@ def generate_realm(form):
         event_generator.new_family_event(data)
 
     realm = {
+        "feedback": feedback,
         "nobility": nobility,
         "factions": factions
     }
