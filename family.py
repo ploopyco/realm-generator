@@ -6,7 +6,6 @@ from . import person
 from .alignment import get_alignment
 
 from .word.name.noble import noble_names
-from .word.motto import mottos
 from .word.adjective.standard import adjectives
 from .word.seat import seat_suffixes
 
@@ -24,7 +23,7 @@ class Family():
         self.knights = []
         self.events = []
         self.rank = rank
-        self.motto = random.choice(mottos)
+        self.motto = random.choice(data['mottos'])
         self.reputation = random.choice(adjectives)
 
         self.alignment, self.alignment_print = get_alignment(data)
