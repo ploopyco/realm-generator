@@ -38,9 +38,7 @@ def index():
     else:
         return flask.render_template(
             'home.html',
-            form=form,
-            #noble_limit=len(noble_names)
-            noble_limit=1692
+            form=form
         )
 
 

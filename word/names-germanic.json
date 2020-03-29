@@ -5,7 +5,7 @@
         {
             "type" : "names_female",
             "id" : "names-f-germanic",
-            "name" : "Germanic Female",
+            "name" : "Germanic Female Names",
             "list" : [
                 "Ada",
                 "Adalgard",
@@ -219,7 +219,7 @@
         {
             "type" : "names_male",
             "id" : "names-m-germanic",
-            "name" : "Germanic Male",
+            "name" : "Germanic Male Names",
             "list" : [
                 "Adalberht",
                 "Adalbern",

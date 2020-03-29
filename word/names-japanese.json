@@ -3,6 +3,19 @@
     "data" :
     [
         {
+            "type" : "titles",
+            "id" : "titles-sengoku",
+            "name" : "Sengoku Japan (Shōgun, Daimyō, Samurai)",
+            "monarch" : "Shōgun",
+            "monarchess" : "Shōgun",
+            "heir" : "Ōji",
+            "heiress" : "Ōjo",
+            "lord" : "Daimyō",
+            "lordess" : "Hime",
+            "knight" : "Samurai",
+            "knightess" : "Onna-Bugeisha"
+        },
+        {
             "type" : "names_noble",
             "id" : "names-n-japanese",
             "name" : "Japanese Clans",
@@ -261,7 +274,7 @@
         {
             "type" : "names_female",
             "id" : "names-f-japanese",
-            "name" : "Japanese Female",
+            "name" : "Japanese Female Names",
             "list" : [
                 "Ai",
                 "Aika",
@@ -697,7 +710,7 @@
         {
             "type" : "names_male",
             "id" : "names-m-japanese",
-            "name" : "Japanese Male",
+            "name" : "Japanese Male Names",
             "list" : [
                 "Aimoto",
                 "Akifumi",
