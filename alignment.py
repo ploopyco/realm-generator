@@ -1,7 +1,7 @@
 import math
 import random
 
-def get_alignment(data, bias=None):
+def get_alignment(data, bias=None, stdev=1):
     
     align = None
     align_print = 'none'
@@ -16,7 +16,7 @@ def get_alignment(data, bias=None):
             for axis, i in zip(data['alignment']['axes'], range(0,num_axes)):
                 axis_max = len(axis['list']) - 1
                 bias_index = axis['list'].index(bias[i])
-                align_index = min(axis_max,(max(0,round(random.gauss(bias_index, 1)))))
+                align_index = min(axis_max,(max(0,round(random.gauss(bias_index, stdev)))))
                 align.append(axis['list'][align_index])
         align_print = ' '.join(align)
 
