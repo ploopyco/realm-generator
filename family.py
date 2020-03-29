@@ -8,7 +8,6 @@ from .alignment import get_alignment
 from .word.name.noble import noble_names
 from .word.motto import mottos
 from .word.adjective.standard import adjectives
-from .word.appointment import appointments, chiefs, councils
 from .word.seat import seat_suffixes
 
 
@@ -205,11 +204,11 @@ class Family():
             courtier = person.Person(data)
             courtier.age = max(courtier.age, person.ADULT_AGE)
             if random.random() > 0.5:
-                courtier.position = random.choice(appointments)
+                courtier.position = random.choice(data['appointments'])
             else:
                 courtier.position = "{} of {}".format(
-                    random.choice(chiefs).capitalize(),
-                    random.choice(councils)
+                    random.choice(data['chiefs']).capitalize(),
+                    random.choice(data['councils'])
                 )
             courtiers.append(courtier)
 

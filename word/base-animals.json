@@ -5,7 +5,7 @@
         {
             "type" : "animals",
             "id" : "base-animals",
-            "name" : "Animals",
+            "name" : "Animals (Default)",
             "list" : [
                 "Aardvark",
                 "Aardwolf",
