@@ -5,8 +5,6 @@ import copy
 from . import person
 from .alignment import get_alignment
 
-from .word.name.noble import noble_names
-
 
 ROYAL_FAMILY = "royal"
 GREAT_FAMILY = "great"
@@ -115,12 +113,12 @@ class Family():
         r = random.random()
         if r > 0.3:
             seat = "{} {}".format(
-                random.choice(noble_names),
+                random.choice(data['names_noble']),
                 random.choice(data['seats'])
             )
         elif r > 0.2:
             seat = "{} {} {}".format(
-                random.choice(noble_names),
+                random.choice(data['names_noble']),
                 random.choice(data['seats']),
                 random.choice(data['seats'])
             )
@@ -221,7 +219,7 @@ def create_nobility(
 
     nobility = []
 
-    noble_names_cp = copy.deepcopy(noble_names)
+    noble_names_cp = copy.deepcopy(data['names_noble'])
 
     royalty = noble_names_cp.pop()
     royal_house = Family(data, royalty, ROYAL_FAMILY)

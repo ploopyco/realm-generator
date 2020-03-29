@@ -145,6 +145,15 @@
         {% endfor %}
       </div>
     </div>
+    <div class="row my-4">
+      <div class="col-md">
+        <h4><b>What sources of Noble names do you want?</b></h4>
+        {{form.names_n}}
+        {% for error in form.names_n.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+    </div>
   </form>
 
   <div class="container my-5">

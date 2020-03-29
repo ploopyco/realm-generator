@@ -11,7 +11,6 @@ from . import family
 from . import faction
 from . import event
 
-from .word.name.noble import noble_names
 from .word.name.female import female_names
 from .word.name.male import male_names
 
@@ -42,7 +41,8 @@ def index():
         return flask.render_template(
             'home.html',
             form=form,
-            noble_limit=len(noble_names)
+            #noble_limit=len(noble_names)
+            noble_limit=1692
         )
 
 
@@ -92,14 +92,15 @@ def generate_realm(form):
         'adjectives_whimsical' : [],
         'faction_prefixes' : [],
         'faction_suffixes' : [],
-        'nicknames' : []
+        'nicknames' : [],
+        'names_noble': []
         }
 
     jsonfiles = glob.glob("word/*.json")
 
     for f in jsonfiles:
-        with open(f) as jfile:
-            obj = json.load(jfile)
+        with open(f, 'rb') as jfile:
+            obj = json.load(jfile, encoding='utf-8')
             for d in obj['data']:
                 if d['type'] == 'races' and d['id'] in form.races.data:
                     data['races'].extend(d['list'])
@@ -109,6 +110,8 @@ def generate_realm(form):
                     data['realm'] = d
                 elif d['type'] == 'alignment' and d['id'] in form.align.data:
                     data['alignment'] = d
+                elif d['type'] == 'names_noble' and d['id'] in form.names_n.data:
+                    data['names_noble'].extend(d['list'])
                 elif d['type'] == 'animals':
                     data['animals'].extend(d['list'])
                 elif d['type'] == 'appointments':
@@ -153,8 +156,8 @@ def generate_realm(form):
     data['faction_prefixes'] = list(set(data['faction_prefixes']))
     data['faction_suffixes'] = list(set(data['faction_suffixes']))
     data['nicknames'] = list(set(data['nicknames']))
+    data['names_noble'] = list(set(data['names_noble']))
 
-    random.shuffle(noble_names)
     random.shuffle(male_names)
     random.shuffle(female_names)
 
@@ -196,11 +199,12 @@ class GenerateForm(flask_wtf.FlaskForm):
     title_data = []
     realm_data = []
     align_data = []
+    names_n_data = []
     jsonfiles = glob.glob("word/*.json")
 
     for f in jsonfiles:
-        with open(f) as jfile:
-            obj = json.load(jfile)
+        with open(f, 'rb') as jfile:
+            obj = json.load(jfile, encoding='utf-8')
             if obj['dataset'] in dataset_names:
                 for dset in datasets:
                     if dset['dataset'] == obj['dataset']:
@@ -220,6 +224,8 @@ class GenerateForm(flask_wtf.FlaskForm):
                 realm_data.append(d)
             elif d['type'] == 'alignment':
                 align_data.append(d)
+            elif d['type'] == 'names_noble':
+                names_n_data.append(d)
 
     race_choices = []
     race_choices.extend([(s['id'], s['name']) for s in race_data])
@@ -236,6 +242,10 @@ class GenerateForm(flask_wtf.FlaskForm):
     align_choices = []
     align_choices.extend([(s['id'], s['name']) for s in align_data])
     align_choices.sort(key=lambda r: r[1])
+
+    names_n_choices = []
+    names_n_choices.extend([(s['id'], s['name']) for s in names_n_data])
+    names_n_choices.sort(key=lambda r: r[1])
 
     great_families = wtforms.IntegerField(
         'Great Noble Families',
@@ -302,6 +312,12 @@ class GenerateForm(flask_wtf.FlaskForm):
         'Alignments',
         choices=align_choices,
         default='none'
+    )
+
+    names_n = wtforms.SelectMultipleField(
+        'Noble Names',
+        choices=names_n_choices,
+        default=[c[0] for c in names_n_choices if c[0][:4] == 'base']
     )
 
     submit = wtforms.SubmitField('Generate A Realm Now!')
