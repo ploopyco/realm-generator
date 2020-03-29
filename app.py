@@ -106,7 +106,8 @@ def generate_realm(form):
                     data['animals'].extend(d['list'])
 
     data['races'] = list(set(data['races']))
-
+    data['animals'] = list(set(data['animals']))
+    
     random.shuffle(noble_names)
     random.shuffle(male_names)
     random.shuffle(female_names)
