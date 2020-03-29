@@ -6,7 +6,6 @@ from . import person
 from .alignment import get_alignment
 
 from .word.name.noble import noble_names
-from .word.adjective.standard import adjectives
 
 
 ROYAL_FAMILY = "royal"
@@ -23,7 +22,7 @@ class Family():
         self.events = []
         self.rank = rank
         self.motto = random.choice(data['mottos'])
-        self.reputation = random.choice(adjectives)
+        self.reputation = random.choice(data['adjectives'])
 
         self.alignment, self.alignment_print = get_alignment(data)
 
@@ -127,7 +126,7 @@ class Family():
             )
         elif r > 0.1:
             seat = "{} {}".format(
-                random.choice(adjectives).capitalize(),
+                random.choice(data['adjectives']).capitalize(),
                 random.choice(data['seats'])
             )
         else:

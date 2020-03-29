@@ -5,8 +5,6 @@ from . import person
 from .alignment import get_alignment
 
 from .word.name.faction import faction_prefixes, faction_suffixes
-from .word.adjective.standard import adjectives
-from .word.adjective.whimsical import whimsical_adjectives
 from .word.name.male import male_names
 
 
@@ -20,7 +18,7 @@ class Faction():
         self.events = []
         self.persons = []
         self.powerful = powerful
-        self.reputation = random.choice(adjectives)
+        self.reputation = random.choice(data['adjectives'])
 
         self.alignment, self.alignment_print = get_alignment(data)
 
@@ -82,7 +80,7 @@ class Faction():
                 )
             else:
                 name = "{} {}".format(
-                    random.choice(whimsical_adjectives).capitalize(),
+                    random.choice(data['adjectives_whimsical']).capitalize(),
                     random.choice(faction_suffixes)
                 )
 

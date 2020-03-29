@@ -6,8 +6,6 @@ from .alignment import get_alignment
 
 from .word.name.female import female_names
 from .word.name.male import male_names
-from .word.adjective.whimsical import whimsical_adjectives
-from .word.adjective.standard import adjectives
 
 MAX_AGE = 99
 MALE = "male"
@@ -32,8 +30,8 @@ class Person():
             self.sex = FEMALE
 
         self.leader = leader
-        self.character = random.choice(adjectives)
-        self.past = random.choice(adjectives)
+        self.character = random.choice(data['adjectives'])
+        self.past = random.choice(data['adjectives'])
         self.leader_relation = None
         self.position = None
         self.events = []
@@ -92,13 +90,13 @@ class Person():
             post_nickname = "{}".format(random.choice(data['cognomens']))
         elif r < 1:
             post_nickname = "the {}".format(
-                random.choice(adjectives).capitalize()
+                random.choice(data['adjectives']).capitalize()
             )
         elif r < 2:
-            pre_nickname = random.choice(adjectives).capitalize()
+            pre_nickname = random.choice(data['adjectives']).capitalize()
         elif r < 3:
             post_nickname = "the {}".format(
-                random.choice(whimsical_adjectives).capitalize()
+                random.choice(data['adjectives_whimsical']).capitalize()
             )
         elif r < 4:
             pre_nickname = random.choice(data['animals']).capitalize()
