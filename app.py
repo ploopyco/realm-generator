@@ -90,7 +90,9 @@ def generate_realm(form):
         'mottos' : [],
         'seats' : [],
         'adjectives' : [],
-        'adjectives_whimsical' : []
+        'adjectives_whimsical' : [],
+        'faction_prefixes' : [],
+        'faction_suffixes' : []
         }
 
     jsonfiles = glob.glob("word/*.json")
@@ -129,6 +131,10 @@ def generate_realm(form):
                     data['adjectives'].extend(d['list'])
                 elif d['type'] == 'adjectives_whimsical':
                     data['adjectives_whimsical'].extend(d['list'])
+                elif d['type'] == 'faction_prefixes':
+                    data['faction_prefixes'].extend(d['list'])
+                elif d['type'] == 'faction_suffixes':
+                    data['faction_suffixes'].extend(d['list'])
 
     data['races'] = list(set(data['races']))
     data['animals'] = list(set(data['animals']))
@@ -142,6 +148,8 @@ def generate_realm(form):
     data['seats'] = list(set(data['seats']))
     data['adjectives'] = list(set(data['adjectives']))
     data['adjectives_whimsical'] = list(set(data['adjectives_whimsical']))
+    data['faction_prefixes'] = list(set(data['faction_prefixes']))
+    data['faction_suffixes'] = list(set(data['faction_suffixes']))
 
     random.shuffle(noble_names)
     random.shuffle(male_names)

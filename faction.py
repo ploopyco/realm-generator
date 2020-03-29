@@ -4,7 +4,6 @@ import random
 from . import person
 from .alignment import get_alignment
 
-from .word.name.faction import faction_prefixes, faction_suffixes
 from .word.name.male import male_names
 
 
@@ -59,29 +58,29 @@ class Faction():
             r = random.random()
             if r > 0.66:
                 name = "{} of the {}".format(
-                    random.choice(faction_prefixes),
+                    random.choice(data['faction_prefixes']),
                     random.choice(data['animals'])
                 )
             elif r > 0.33:
                 name = "{} of Saint {}".format(
-                    random.choice(faction_prefixes),
+                    random.choice(data['faction_prefixes']),
                     random.choice(male_names)
                 )
             else:
                 name = "{} of {}".format(
-                    random.choice(faction_prefixes),
+                    random.choice(data['faction_prefixes']),
                     self.region
                 )
         else:
             if random.random() > 0.5:
                 name = "{} {}".format(
                     self.region,
-                    random.choice(faction_suffixes)
+                    random.choice(data['faction_suffixes'])
                 )
             else:
                 name = "{} {}".format(
                     random.choice(data['adjectives_whimsical']).capitalize(),
-                    random.choice(faction_suffixes)
+                    random.choice(data['faction_suffixes'])
                 )
 
         return name
