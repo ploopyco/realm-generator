@@ -9,7 +9,6 @@ from .word.name.male import male_names
 from .word.adjective.whimsical import whimsical_adjectives
 from .word.adjective.standard import adjectives
 from .word.family import male_family, female_family
-from .word.cognomen import cognomens
 
 MAX_AGE = 99
 MALE = "male"
@@ -91,7 +90,7 @@ class Person():
         r = random.random() * 30
 
         if r < 15 and self.leader is True:
-            post_nickname = "{}".format(random.choice(cognomens))
+            post_nickname = "{}".format(random.choice(data['cognomens']))
         elif r < 1:
             post_nickname = "the {}".format(
                 random.choice(adjectives).capitalize()
