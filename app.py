@@ -17,7 +17,6 @@ from .word.name.male import male_names
 from .word.name.nickname import nick_names
 from .word.adjective.whimsical import whimsical_adjectives
 from .word.adjective.standard import adjectives
-from .word.seat import seat_suffixes
 
 # Some good default values
 GREAT_FAMILIES = 7
@@ -90,7 +89,8 @@ def generate_realm(form):
         'cognomens' : [],
         'family_m' : [],
         'family_f' : [],
-        'mottos' : []
+        'mottos' : [],
+        'seats' : []
         }
 
     jsonfiles = glob.glob("word/*.json")
@@ -123,6 +123,8 @@ def generate_realm(form):
                     data['family_f'].extend(d['list'])
                 elif d['type'] == 'mottos':
                     data['mottos'].extend(d['list'])
+                elif d['type'] == 'seats':
+                    data['seats'].extend(d['list'])
 
     data['races'] = list(set(data['races']))
     data['animals'] = list(set(data['animals']))
@@ -133,6 +135,7 @@ def generate_realm(form):
     data['family_m'] = list(set(data['family_m']))
     data['family_f'] = list(set(data['family_f']))
     data['mottos'] = list(set(data['mottos']))
+    data['seats'] = list(set(data['seats']))
 
     random.shuffle(noble_names)
     random.shuffle(male_names)
@@ -140,7 +143,6 @@ def generate_realm(form):
     random.shuffle(nick_names)
     random.shuffle(whimsical_adjectives)
     random.shuffle(adjectives)
-    random.shuffle(seat_suffixes)
 
     nobility = family.create_nobility(
         data,

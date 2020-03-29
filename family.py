@@ -7,7 +7,6 @@ from .alignment import get_alignment
 
 from .word.name.noble import noble_names
 from .word.adjective.standard import adjectives
-from .word.seat import seat_suffixes
 
 
 ROYAL_FAMILY = "royal"
@@ -118,23 +117,23 @@ class Family():
         if r > 0.3:
             seat = "{} {}".format(
                 random.choice(noble_names),
-                random.choice(seat_suffixes)
+                random.choice(data['seats'])
             )
         elif r > 0.2:
             seat = "{} {} {}".format(
                 random.choice(noble_names),
-                random.choice(seat_suffixes),
-                random.choice(seat_suffixes)
+                random.choice(data['seats']),
+                random.choice(data['seats'])
             )
         elif r > 0.1:
             seat = "{} {}".format(
                 random.choice(adjectives).capitalize(),
-                random.choice(seat_suffixes)
+                random.choice(data['seats'])
             )
         else:
             seat = "{} {}".format(
                 random.choice(data['animals']),
-                random.choice(seat_suffixes)
+                random.choice(data['seats'])
             )
 
         return seat

@@ -1,0 +1,38 @@
+{
+    "dataset" : "base",
+    "data" :
+    [
+        {
+            "type" : "seats",
+            "id" : "base-seats",
+            "name" : "Seats (Default)",
+            "list" : [
+                "Palace",
+                "Castle",
+                "House",
+                "Hall",
+                "Lodge",
+                "Park",
+                "Cottage",
+                "Estate",
+                "Tower",
+                "Abbey",
+                "Manor",
+                "Mill",
+                "Farm",
+                "Place",
+                "Court",
+                "Farm House",
+                "Chalet",
+                "Chateau",
+                "Plaza",
+                "Residence",
+                "Villa",
+                "Mansion",
+                "Home",
+                "Dwelling",
+                "Apartments"
+            ]
+        }
+    ]
+}
