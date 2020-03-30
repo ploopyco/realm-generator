@@ -1,0 +1,123 @@
+{
+    "$schema" : "http://json-schema.org/schema#",
+    "$id" : "#/dataset.json",
+
+    "definitions" : {
+        "alignment" : {
+            "$id" : "#alignment",
+            "type" : "object",
+            "properties" : {
+                "type" : { "type" : "string", "enum" : [ "alignment" ] },
+                "id" : { "type" : "string" },
+                "name" : { "type" : "string" },
+                "axes" : { 
+                    "type" : "array",
+                    "items" : {
+                        "type" : "object",
+                        "properties" : {
+                            "axis" : { "type" : "string" },
+                            "list" : { 
+                                "type" : "array",
+                                "uniqueItems" : true,
+                                "items" : {
+                                    "type" : "string"
+                                }
+                            }
+                        },
+                        "required" : [ "list" ]
+                    }
+                }
+            },
+            "required" : [ "type", "id", "name", "axes" ]
+        },
+        "realms" : {
+            "$id" : "#realms",
+            "type" : "object",
+            "properties" : {
+                "type" : { "type" : "string", "enum" : [ "realm" ] },
+                "id" : { "type" : "string" },
+                "name" : { "type" : "string" },
+                "plural" : { "type" : "string" },
+                "desc" : { "type" : "string" }
+            },
+            "required" : [ "type", "id", "name", "plural", "desc" ]
+        },
+        "titles" : {
+            "$id" : "#titles",
+            "type" : "object",
+            "properties" : {
+                "type" : { "type" : "string", "enum" : [ "titles" ] },
+                "id" : { "type" : "string" },
+                "name" : { "type" : "string" },
+                "monarch" : { "type" : "string" },
+                "monarchess" : { "type" : "string" },
+                "heir" : { "type" : "string" },
+                "heiress" : { "type" : "string" },
+                "lord" : { "type" : "string" },
+                "lordess" : { "type" : "string" },
+                "knight" : { "type" : "string" },
+                "knightess" : { "type" : "string" }
+            },
+            "required" : [ "type", "id", "name", "monarch", 
+                "monarchess", "heir", "heiress", "lord", "lordess", 
+                "knight", "knightess"]
+        },
+        "listdata" : {
+            "$id" : "#listdata",
+            "type" : "object",
+            "properties" : {
+                "type" : { 
+                    "type" : "string", 
+                    "enum" : [
+                        "adjectives",
+                        "adjectives_whimsical",
+                        "animals",
+                        "appointments",
+                        "chiefs",
+                        "councils",
+                        "cognomens",
+                        "family_m",
+                        "family_f",
+                        "mottos",
+                        "faction_prefixes",
+                        "faction_suffixes",
+                        "names_female",
+                        "names_male",
+                        "names_noble",
+                        "nicknames",
+                        "seats",
+                        "races"
+                    ] 
+                },
+                "id" : { "type" : "string" },
+                "name" : { "type" : "string" },
+                "list" : { 
+                    "type" : "array",
+                    "uniqueItems" : true,
+                    "items" : {
+                        "type" : "string"
+                    }
+                }
+            },
+            "required" : [ "type", "id", "name", "list" ]
+        }
+    },
+
+    "type" : "object",
+    "properties" : {
+        "dataset" : { "type" : "string" },
+        "data" : { 
+            "type" : "array",
+            "uniqueItems" : true,
+            "items" : {
+                "anyOf" : [
+                    { "$ref" : "#/definitions/listdata" },
+                    { "$ref" : "#/definitions/alignment" },
+                    { "$ref" : "#/definitions/realms"},
+                    { "$ref" : "#/definitions/titles"}
+                ]
+            }
+        }
+    },
+    "required" : [ "dataset", "data" ]
+}

@@ -1,4 +1,5 @@
 {
+    "$schema" : "../schema/dataset.json",
     "dataset" : "base",
     "data" : [
         {
@@ -26,7 +27,6 @@
             "name" : "Default Faction Suffixes",
             "list" : [
                 "Protectorate",
-                "Confederation",
                 "Enclave",
                 "Accord",
                 "Affiliation",
