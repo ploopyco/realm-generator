@@ -264,7 +264,7 @@ class EventGenerator():
         event.affected_persons.append(n2)
 
         event.description = (
-            "{} of the {} killed {} of the {} in vengenace".format(
+            "{} of the {} killed {} of the {} in vengeance".format(
                 n1.get_full_title(),
                 f1.create_html_a_name(self.nobility),
                 n2.get_full_title(),
@@ -533,6 +533,10 @@ class EventGenerator():
 
         c = random.choice(f1.courtiers)
 
+        event.affected_persons.append(n1)
+        event.affected_persons.append(n2)
+        event.affected_persons.append(c)
+
         event.description = (
             "{} ({}) has greatly offended {} of the {}, to the great "
             "consternation of {} of the {}".format(
@@ -553,6 +557,9 @@ class EventGenerator():
         c = family.random_courtier(self.nobility)
         f, n = family.random_noble(self.nobility)
 
+        event.affected_persons.append(c)
+        event.affected_persons.append(n)
+
         event.description = (
             "{} ({}) was revealed to be a spy for {} of the {}".format(
                 c.get_first_name(),
@@ -569,6 +576,9 @@ class EventGenerator():
 
         c = family.random_courtier(self.nobility)
         f, n = family.random_noble(self.nobility)
+
+        event.affected_persons.append(c)
+        event.affected_persons.append(n)
 
         event.description = (
             "{} ({}) was killed by {} of the {} in a duel of honour".format(
