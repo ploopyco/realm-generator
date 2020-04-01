@@ -264,7 +264,7 @@ class EventGenerator():
         event.affected_persons.append(n2)
 
         event.description = (
-            "{} of the {} killed {} of the {} in vengenace".format(
+            "{} of the {} killed {} of the {} in vengeance".format(
                 n1.get_full_title(),
                 f1.create_html_a_name(self.nobility),
                 n2.get_full_title(),
