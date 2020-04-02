@@ -126,7 +126,13 @@
     <div class="row my-4">
       <div class="col-md">
         <h4><b>What sources of races or ethnicities do you want?</b></h4>
-        {{form.races}}
+        {% for subfield in form.races %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
         {% for error in form.races.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
@@ -148,25 +154,46 @@
     <div class="row my-4">
       <div class="col-md">
         <h4><b>What sources of Noble names do you want?</b></h4>
-        {{form.names_n}}
+        {% for subfield in form.names_n %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
         {% for error in form.names_n.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
       </div>
       <div class="col-md">
         <h4><b>What sources of Male names do you want?</b></h4>
-        {{form.names_m}}
+        {% for subfield in form.names_m %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
         {% for error in form.names_m.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
       </div>
       <div class="col-md">
         <h4><b>What sources of Female names do you want?</b></h4>
-        {{form.names_f}}
+        {% for subfield in form.names_f %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
         {% for error in form.names_f.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
       </div>
+    </div>
+    <div class="container my-5">
+      {{ form.submit(class="form-control btn-lg btn-primary") }}
     </div>
   </form>
 
@@ -184,18 +211,6 @@
     $('#generate-form').submit(function(){
       $('#overlay').fadeIn();
       return;
-    });
-
-    $('.families-input').on('input',function(e){
-      var x = 0;
-      $('.families-input').each(function() {
-        x += parseInt($(this).val());
-      });
-
-      if (x > {{ noble_limit }})
-        $("#noble-limit-warning").css("color", "red");
-      else
-        $("#noble-limit-warning").css("color", "black");
     });
   });
 </script>
