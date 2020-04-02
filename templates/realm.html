@@ -135,15 +135,18 @@
       }
     }
 
-    var realmHtml = ' \
-        <div class="container text-center"> \
-          <p>Generated ' + feedback.total_out + ' ' + royalFamily.family_realm_plural + ': '
-            + feedback.royal_out + ' Royal, ' + feedback.great_out + ' Great, ' + feedback.minor_out + ' Minor, ' + feedback.landed_out + ' Landed<br>';
-    
-    if (feedback.toomany == true) {
+    var realmHtml = '<div class="container text-center">';
+
+    if (feedback != null) {
       realmHtml += ' \
-          <b style="color:red">Requested ' + feedback.total_in + ' ' + royalFamily.family_realm_plural + ': '
-            + feedback.royal_in + ' Royal, ' + feedback.great_in + ' Great, ' + feedback.minor_in + ' Minor, ' + feedback.landed_in + ' Landed</b></p>';
+            <p>Generated ' + feedback.total_out + ' ' + royalFamily.family_realm_plural + ': '
+              + feedback.royal_out + ' Royal, ' + feedback.great_out + ' Great, ' + feedback.minor_out + ' Minor, ' + feedback.landed_out + ' Landed<br>';
+      
+      if (feedback.toomany == true) {
+        realmHtml += ' \
+            <b style="color:red">Requested ' + feedback.total_in + ' ' + royalFamily.family_realm_plural + ': '
+              + feedback.royal_in + ' Royal, ' + feedback.great_in + ' Great, ' + feedback.minor_in + ' Minor, ' + feedback.landed_in + ' Landed</b></p>';
+      }
     }
 
     realmHtml += ' \
