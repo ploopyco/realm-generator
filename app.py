@@ -314,42 +314,49 @@ class GenerateForm(flask_wtf.FlaskForm):
     titles = wtforms.RadioField(
         'Title Stylings',
         choices=title_choices,
+        validators=[wtforms.validators.DataRequired()],
         default=title_choices[0][0]
     )
 
     realms = wtforms.RadioField(
         'Family Realm Names',
         choices=realm_choices,
+        validators=[wtforms.validators.DataRequired()],
         default='house'
     )
 
     races = MultiCheckboxField(
         'Races',
         choices=race_choices,
+        validators=[wtforms.validators.DataRequired()],
         default=[c[0] for c in race_choices if c[0][:2] == 'dd']
     )
 
     align = wtforms.RadioField(
         'Alignments',
         choices=align_choices,
+        validators=[wtforms.validators.DataRequired()],
         default='none'
     )
 
     names_n = MultiCheckboxField(
         'Noble Names',
         choices=names_n_choices,
+        validators=[wtforms.validators.DataRequired()],
         default=[c[0] for c in names_n_choices if c[0][:4] == 'base']
     )
 
     names_m = MultiCheckboxField(
         'Male Names',
         choices=names_m_choices,
+        validators=[wtforms.validators.DataRequired()],
         default=[c[0] for c in names_m_choices if c[0][:4] == 'base']
     )
 
     names_f = MultiCheckboxField(
         'Female Names',
         choices=names_f_choices,
+        validators=[wtforms.validators.DataRequired()],
         default=[c[0] for c in names_f_choices if c[0][:4] == 'base']
     )
 
