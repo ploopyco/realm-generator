@@ -2,7 +2,7 @@ import flask
 import flask_wtf
 import wtforms
 import wtforms.validators
-import random
+import wtforms.widgets
 import os
 import json
 import glob
@@ -71,28 +71,28 @@ def generate_realm(form):
     start_family_events = form.start_family_events.data
 
     data = {
-        'races' : [],
-        'titles' : {},
-        'realm' : {},
-        'alignment' : {},
-        'animals' : [],
-        'appointments' : [],
-        'chiefs' : [],
-        'councils' : [],
-        'cognomens' : [],
-        'family_m' : [],
-        'family_f' : [],
-        'mottos' : [],
-        'seats' : [],
-        'adjectives' : [],
-        'adjectives_whimsical' : [],
-        'faction_prefixes' : [],
-        'faction_suffixes' : [],
-        'nicknames' : [],
+        'races': [],
+        'titles': {},
+        'realm': {},
+        'alignment': {},
+        'animals': [],
+        'appointments': [],
+        'chiefs': [],
+        'councils': [],
+        'cognomens': [],
+        'family_m': [],
+        'family_f': [],
+        'mottos': [],
+        'seats': [],
+        'adjectives': [],
+        'adjectives_whimsical': [],
+        'faction_prefixes': [],
+        'faction_suffixes': [],
+        'nicknames': [],
         'names_noble': [],
-        'names_male' : [],
-        'names_female' : []
-        }
+        'names_male': [],
+        'names_female': []
+    }
 
     jsonfiles = glob.glob("word/*.json")
 
@@ -191,6 +191,11 @@ def generate_realm(form):
     }
 
     return json.dumps(realm, cls=RealmEncoder)
+
+
+class MultiCheckboxField(wtforms.SelectMultipleField):
+    widget = wtforms.widgets.ListWidget(prefix_label=False)
+    option_widget = wtforms.widgets.CheckboxInput()
 
 
 class GenerateForm(flask_wtf.FlaskForm):
@@ -318,7 +323,7 @@ class GenerateForm(flask_wtf.FlaskForm):
         default='house'
     )
 
-    races = wtforms.SelectMultipleField(
+    races = MultiCheckboxField(
         'Races',
         choices=race_choices,
         default=[c[0] for c in race_choices if c[0][:2] == 'dd']
@@ -330,19 +335,19 @@ class GenerateForm(flask_wtf.FlaskForm):
         default='none'
     )
 
-    names_n = wtforms.SelectMultipleField(
+    names_n = MultiCheckboxField(
         'Noble Names',
         choices=names_n_choices,
         default=[c[0] for c in names_n_choices if c[0][:4] == 'base']
     )
 
-    names_m = wtforms.SelectMultipleField(
+    names_m = MultiCheckboxField(
         'Male Names',
         choices=names_m_choices,
         default=[c[0] for c in names_m_choices if c[0][:4] == 'base']
     )
 
-    names_f = wtforms.SelectMultipleField(
+    names_f = MultiCheckboxField(
         'Female Names',
         choices=names_f_choices,
         default=[c[0] for c in names_f_choices if c[0][:4] == 'base']
