@@ -4,43 +4,40 @@ import inspect
 from . import family
 from . import person
 
-from .word.adjective.standard import adjectives
-from .word.animal import animals
-
 
 class EventGenerator():
     def __init__(self, nobility, factions):
         self.nobility = nobility
         self.factions = factions
 
-    def new_noble_event(self):
+    def new_noble_event(self, data):
         event_fs = inspect.getmembers(
             self,
             predicate=inspect.ismethod
         )
         fs_list = [y for (x, y) in event_fs if x.startswith("gen_event_n_")]
-        return self._new_event(fs_list)
+        return self._new_event(data, fs_list)
 
-    def new_courtier_event(self):
+    def new_courtier_event(self, data):
         event_fs = inspect.getmembers(
             self,
             predicate=inspect.ismethod
         )
         fs_list = [y for (x, y) in event_fs if x.startswith("gen_event_c_")]
-        return self._new_event(fs_list)
+        return self._new_event(data, fs_list)
 
-    def new_family_event(self):
+    def new_family_event(self, data):
         event_fs = inspect.getmembers(
             self,
             predicate=inspect.ismethod
         )
         fs_list = [y for (x, y) in event_fs if x.startswith("gen_event_f_")]
-        return self._new_event(fs_list)
+        return self._new_event(data, fs_list)
 
-    def _new_event(self, fs_list):
+    def _new_event(self, data, fs_list):
         if len(fs_list) == 0:
             return
-        event = random.choice(fs_list)()
+        event = random.choice(fs_list)(data)
         for o in event.affected_organizations:
             o.events.append(event)
         del event.affected_organizations  # prevent circular reference
@@ -49,8 +46,8 @@ class EventGenerator():
         del event.affected_persons  # prevent circular reference
         return event
 
-    def gen_event_n_matrimony(self):
-        event = Event()
+    def gen_event_n_matrimony(self, data):
+        event = Event(data)
 
         nobles = family.all_nobles(self.nobility)
         f1, n1 = random.choice(nobles)
@@ -78,8 +75,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_n_divorce(self):
-        event = Event()
+    def gen_event_n_divorce(self, data):
+        event = Event(data)
 
         nobles = family.all_nobles(self.nobility)
         f1, n1 = random.choice(nobles)
@@ -109,8 +106,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_n_illicit_lovers(self):
-        event = Event()
+    def gen_event_n_illicit_lovers(self, data):
+        event = Event(data)
 
         nobles = family.all_nobles(self.nobility)
         f1, n1 = random.choice(nobles)
@@ -141,8 +138,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_n_baby(self):
-        event = Event()
+    def gen_event_n_baby(self, data):
+        event = Event(data)
         _, n = family.random_noble(self.nobility)
         event.affected_persons.append(n)
         event.description = (
@@ -152,8 +149,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_n_bastard(self):
-        event = Event()
+    def gen_event_n_bastard(self, data):
+        event = Event(data)
         _, n = family.random_noble(self.nobility)
         event.affected_persons.append(n)
         event.description = (
@@ -163,8 +160,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_n_murdered_commoner(self):
-        event = Event()
+    def gen_event_n_murdered_commoner(self, data):
+        event = Event(data)
         _, n = family.random_noble(self.nobility)
         event.affected_persons.append(n)
         event.description = (
@@ -174,8 +171,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_n_tournament_win(self):
-        event = Event()
+    def gen_event_n_tournament_win(self, data):
+        event = Event(data)
         _, n = family.random_noble(self.nobility)
         event.affected_persons.append(n)
         event.description = (
@@ -185,8 +182,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_n_joined_faction(self):
-        event = Event()
+    def gen_event_n_joined_faction(self, data):
+        event = Event(data)
         _, n = family.random_noble(self.nobility)
         f = random.choice(self.factions)
         event.affected_persons.append(n)
@@ -198,8 +195,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_n_celebrated_birthday(self):
-        event = Event()
+    def gen_event_n_celebrated_birthday(self, data):
+        event = Event(data)
         _, n = family.random_noble(self.nobility)
         event.affected_persons.append(n)
         event.description = (
@@ -209,8 +206,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_n_dismissed_courtiers(self):
-        event = Event()
+    def gen_event_n_dismissed_courtiers(self, data):
+        event = Event(data)
         f, n = family.random_noble(self.nobility)
         event.affected_persons.append(n)
         event.description = (
@@ -221,8 +218,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_n_honour_duel(self):
-        event = Event()
+    def gen_event_n_honour_duel(self, data):
+        event = Event(data)
 
         nobles = family.all_nobles(self.nobility)
         f1, n1 = random.choice(nobles)
@@ -248,8 +245,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_n_revenge_killing(self):
-        event = Event()
+    def gen_event_n_revenge_killing(self, data):
+        event = Event(data)
 
         nobles = family.all_nobles(self.nobility)
         f1, n1 = random.choice(nobles)
@@ -274,8 +271,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_n_death_illness(self):
-        event = Event()
+    def gen_event_n_death_illness(self, data):
+        event = Event(data)
         _, n = family.random_noble(self.nobility)
         event.affected_persons.append(n)
         event.description = (
@@ -285,8 +282,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_n_death_commoner(self):
-        event = Event()
+    def gen_event_n_death_commoner(self, data):
+        event = Event(data)
         _, n = family.random_noble(self.nobility)
         event.affected_persons.append(n)
         event.description = (
@@ -296,8 +293,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_claim_pressed(self):
-        event = Event()
+    def gen_event_f_claim_pressed(self, data):
+        event = Event(data)
 
         f1 = family.random_family(self.nobility)
         f2 = family.random_family(self.nobility)
@@ -317,8 +314,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_f_uprising(self):
-        event = Event()
+    def gen_event_f_uprising(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         event.affected_organizations.append(f)
         event.description = (
@@ -328,8 +325,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_new_knight(self):
-        event = Event()
+    def gen_event_f_new_knight(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         while f.rank == family.PETTY_FAMILY:
             f = family.random_family(self.nobility)
@@ -341,8 +338,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_rebellion(self):
-        event = Event()
+    def gen_event_f_rebellion(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         while f.rank == family.PETTY_FAMILY or len(f.vassals + f.knights) == 0:
             f = family.random_family(self.nobility)
@@ -357,20 +354,20 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_festival(self):
-        event = Event()
+    def gen_event_f_festival(self, data):
+        event = Event(data)
         h = family.random_family(self.nobility)
         event.affected_organizations.append(h)
         event.description = (
             "The {} hosted a festival in honour of {}s".format(
                 h.get_full_name(),
-                random.choice(animals).lower()
+                random.choice(data['animals']).lower()
             )
         )
         return event
 
-    def gen_event_f_famine(self):
-        event = Event()
+    def gen_event_f_famine(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         event.affected_organizations.append(f)
         event.description = (
@@ -380,8 +377,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_food_plentiful(self):
-        event = Event()
+    def gen_event_f_food_plentiful(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         event.affected_organizations.append(f)
         event.description = (
@@ -391,8 +388,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_drought(self):
-        event = Event()
+    def gen_event_f_drought(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         event.affected_organizations.append(f)
         event.description = (
@@ -402,8 +399,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_water_plentiful(self):
-        event = Event()
+    def gen_event_f_water_plentiful(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         event.affected_organizations.append(f)
         event.description = (
@@ -413,8 +410,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_economic_downturn(self):
-        event = Event()
+    def gen_event_f_economic_downturn(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         event.affected_organizations.append(f)
         event.description = (
@@ -424,8 +421,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_f_economic_upturn(self):
-        event = Event()
+    def gen_event_f_economic_upturn(self, data):
+        event = Event(data)
         f = family.random_family(self.nobility)
         event.affected_organizations.append(f)
         event.description = (
@@ -435,8 +432,8 @@ class EventGenerator():
         )
         return event
 
-    def gen_event_c_implication(self):
-        event = Event()
+    def gen_event_c_implication(self, data):
+        event = Event(data)
 
         f = family.random_family(self.nobility)
         while len(f.courtiers) < 2:
@@ -463,8 +460,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_c_theft(self):
-        event = Event()
+    def gen_event_c_theft(self, data):
+        event = Event(data)
 
         f = family.random_family(self.nobility)
         while len(f.courtiers) < 2:
@@ -491,8 +488,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_c_office_swap(self):
-        event = Event()
+    def gen_event_c_office_swap(self, data):
+        event = Event(data)
 
         f = family.random_family(self.nobility)
         while len(f.courtiers) < 2:
@@ -521,8 +518,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_c_offense(self):
-        event = Event()
+    def gen_event_c_offense(self, data):
+        event = Event(data)
 
         f1, n1 = family.random_noble(self.nobility)
         f2, n2 = family.random_noble(self.nobility)
@@ -551,8 +548,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_c_spy(self):
-        event = Event()
+    def gen_event_c_spy(self, data):
+        event = Event(data)
 
         c = family.random_courtier(self.nobility)
         f, n = family.random_noble(self.nobility)
@@ -571,8 +568,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_c_duel(self):
-        event = Event()
+    def gen_event_c_duel(self, data):
+        event = Event(data)
 
         c = family.random_courtier(self.nobility)
         f, n = family.random_noble(self.nobility)
@@ -591,8 +588,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_c_hung(self):
-        event = Event()
+    def gen_event_c_hung(self, data):
+        event = Event(data)
 
         f = family.random_family(self.nobility)
         while len(f.courtiers) < 1:
@@ -614,8 +611,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_c_promotion(self):
-        event = Event()
+    def gen_event_c_promotion(self, data):
+        event = Event(data)
 
         f = family.random_family(self.nobility)
         while len(f.courtiers) < 1:
@@ -637,8 +634,8 @@ class EventGenerator():
 
         return event
 
-    def gen_event_c_demotion(self):
-        event = Event()
+    def gen_event_c_demotion(self, data):
+        event = Event(data)
 
         f = family.random_family(self.nobility)
         while len(f.courtiers) < 1:
@@ -662,11 +659,11 @@ class EventGenerator():
 
 
 class Event():
-    def __init__(self):
+    def __init__(self, data):
         self.affected_organizations = []
         self.affected_persons = []
         self.description = None
         self.reactions = []
 
         for _ in range(3):
-            self.reactions.append(random.choice(adjectives))
+            self.reactions.append(random.choice(data['adjectives']))

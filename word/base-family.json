@@ -1,0 +1,31 @@
+{
+    "$schema" : "../schema/dataset.json",
+    "dataset" : "base",
+    "data" :
+    [
+        {
+            "type" : "family_m",
+            "id" : "base-famiy-male",
+            "name" : "Male Family (Default)",
+            "list" : [
+                "son",
+                "brother",
+                "grandson",
+                "nephew",
+                "cousin"
+            ]
+        },
+        {
+            "type" : "family_f",
+            "id" : "base-family-female",
+            "name" : "Female Family (Default)",
+            "list" : [
+                "daughter",
+                "sister",
+                "granddaughter",
+                "niece",
+                "cousin"
+            ]
+        }
+    ]
+}

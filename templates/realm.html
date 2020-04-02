@@ -59,11 +59,13 @@
   var realm = {{ realm|safe }};
   var nobility = null;
   var factions = null;
+  var feedback = null;
 
   $(document).ready(function() {
     if (realm != null) {
       nobility = realm.nobility;
       factions = realm.factions;
+      feedback = realm.feedback;
 
       displayRealm();
       $('#overlay').hide();
@@ -115,6 +117,7 @@
       realm = JSON.parse(data);
       nobility = realm.nobility;
       factions = realm.factions;
+      feedback = realm.feedback;
       displayRealm();
     });
   }
@@ -134,11 +137,21 @@
 
     var realmHtml = ' \
         <div class="container text-center"> \
+          <p>Generated ' + feedback.total_out + ' ' + royalFamily.family_realm_plural + ': '
+            + feedback.royal_out + ' Royal, ' + feedback.great_out + ' Great, ' + feedback.minor_out + ' Minor, ' + feedback.landed_out + ' Landed<br>';
+    
+    if (feedback.toomany == true) {
+      realmHtml += ' \
+          <b style="color:red">Requested ' + feedback.total_in + ' ' + royalFamily.family_realm_plural + ': '
+            + feedback.royal_in + ' Royal, ' + feedback.great_in + ' Great, ' + feedback.minor_in + ' Minor, ' + feedback.landed_in + ' Landed</b></p>';
+    }
+
+    realmHtml += ' \
           <h3>The Royal ' + royalFamily.family_realm_name + '</h3> \
           <div class="container mb-5"> \
             <button data-family="' + royalFamily.name + '" type="button" class="family btn btn-primary btn-block btn-lg">The Royal ' + royalFamily.family_realm_name + ' of ' + royalFamily.name + '</button> \
           </div> \
-          <h3>The Great ' + royalFamily.family_realm_name + 's</h3> \
+          <h3>The Great ' + royalFamily.family_realm_plural + '</h3> \
           <div id="great-families" class="container mb-5">';
 
     for (var i = 0; i < nobility.length; i++) {
@@ -204,6 +217,9 @@
         <h5><b>Ancestral Seat</b> - ' + family.seat + '</h5> \
         <h5><b>Reputation</b> - ' + family.reputation + '</h5> \
         <h5><b>Head of the Family</b> - ' + getFullTitle(findLeader(family)) + '</h5>';
+        if (family.alignment_print != "none") {
+          html += '<h5><b>Family Alignment</b> - ' + family.alignment_print + '</h5>';
+        }
 
     if (family.persons.length > 0)
       html += makePersonsHtml(family);
@@ -256,6 +272,9 @@
         <h5><b>Region</b> - <a class="family-link" href="#" data-family="' +
         makeDataFromName(faction.region, nobility) + '">' + faction.region + '</a></b> \
         <h5><b>Faction Leader</b> - ' + getFullName(findLeader(faction)) + '</h5>';
+        if (faction.alignment_print != 'none') {
+          html += '<h5><b>Faction Alignment</b> - ' + faction.alignment_print + '</h5>';
+        }
 
     if (faction.persons.length > 0)
       html += makeAgentsHtml(faction);
@@ -297,8 +316,14 @@
             <li>' +
             getFullTitle(person) + ', ' +
             person.sex + ', ' +
-            person.age + ' years old, ' +
-            person.race + ' - ' +
+            person.age + ' years old';
+        if (person.race != 'none') {
+          html += ', ' + person.race;
+        }
+        if (person.alignment_print != 'none') {
+          html += ', ' + person.alignment_print;
+        }
+        html += ' - ' +
             '<i>' + person.character + ' character, ' +
             person.past + ' past</i>';
       } else {
@@ -307,8 +332,15 @@
             getFullTitle(person) + ', ' +
             person.leader_relation + ' of the leader, ' +
             person.sex + ', ' +
-            person.age + ' years old, ' +
-            person.race + ' - ' +
+            person.age + ' years old';
+        if (person.race != 'none') {
+          html += ', ' +
+              person.race;
+        }
+        if (person.alignment_print != 'none') {
+          html += ', ' + person.alignment_print;
+        }
+        html += ' - ' +
             '<i>' + person.character + ' character, ' +
             person.past + ' past</i>';
       }
@@ -343,8 +375,15 @@
           getFullName(courtier) + ', ' +
           courtier.position + ', ' +
           courtier.sex + ', ' +
-          courtier.age + ' years old, ' +
-          courtier.race + ' - ' +
+          courtier.age + ' years old';
+      if (courtier.race != 'none') {
+        html += ', ' +
+            courtier.race;
+      }
+      if (courtier.alignment_print != 'none') {
+          html += ', ' + courtier.alignment_print;
+      }
+      html += ' - ' +
           '<i>' + courtier.character + ' character, ' +
           courtier.past + ' past</i>';
 
@@ -377,9 +416,15 @@
           <li>' +
           getFullName(agent) + ', ' +
           agent.sex + ', ' +
-          agent.age + ' years old, ' +
-          agent.race + ' - ' +
-          '<i>' + agent.character + ' character, ' +
+          agent.age + ' years old';
+      if (agent.race != 'none') {
+        html += ', ' + agent.race;
+      }
+      if (agent.alignment_print != 'none') {
+        html += ', ' + agent.alignment_print;
+      }
+      html += ' - \
+          <i>' + agent.character + ' character, ' +
           agent.past + ' past</i>';
 
       if (agent.events.length != 0) {
@@ -403,7 +448,7 @@
   }
 
   function makeVassalsHtml(family) {
-    var html = '<h3>Vassal Houses</h3>';
+    var html = '<h3>Vassal ' + family.family_realm_plural + '</h3>';
     for (var i = 0; i < family.vassals.length; i++) {
       var vassal = family.vassals[i];
       html += ' \

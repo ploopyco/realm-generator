@@ -3,13 +3,7 @@ import random
 import copy
 
 from . import person
-
-from .word.name.noble import noble_names
-from .word.motto import mottos
-from .word.adjective.standard import adjectives
-from .word.animal import animals
-from .word.appointment import appointments, chiefs, councils
-from .word.seat import seat_suffixes
+from .alignment import get_alignment
 
 
 ROYAL_FAMILY = "royal"
@@ -19,23 +13,23 @@ PETTY_FAMILY = "petty"
 
 
 class Family():
-    def __init__(self, name, rank, titles, family_realm_name=None):
+    def __init__(self, data, name, rank):
         self.name = name
         self.vassals = []
         self.knights = []
         self.events = []
         self.rank = rank
-        self.motto = random.choice(mottos)
-        self.reputation = random.choice(adjectives)
+        self.motto = random.choice(data['mottos'])
+        self.reputation = random.choice(data['adjectives'])
 
-        self.seat = self._generate_seat()
-        self.persons = self._instantiate_persons(titles)
-        self.courtiers = self._instantiate_courtiers()
+        self.alignment, self.alignment_print = get_alignment(data)
 
-        if family_realm_name is None:
-            self.family_realm_name = "House"
-        else:
-            self.family_realm_name = family_realm_name
+        self.family_realm_name = data['realm']['name']
+        self.family_realm_plural = data['realm']['plural']
+
+        self.seat = self._generate_seat(data)
+        self.persons = self._instantiate_persons(data)
+        self.courtiers = self._instantiate_courtiers(data)
 
     def get_leader(self):
         h = [m for m in self.persons if m.head is True]
@@ -115,52 +109,54 @@ class Family():
                     return "{}/{}".format(f.name, rk)
         return None
 
-    def _generate_seat(self):
+    def _generate_seat(self, data):
         r = random.random()
         if r > 0.3:
             seat = "{} {}".format(
-                random.choice(noble_names),
-                random.choice(seat_suffixes)
+                random.choice(data['names_noble']),
+                random.choice(data['seats'])
             )
         elif r > 0.2:
             seat = "{} {} {}".format(
-                random.choice(noble_names),
-                random.choice(seat_suffixes),
-                random.choice(seat_suffixes)
+                random.choice(data['names_noble']),
+                random.choice(data['seats']),
+                random.choice(data['seats'])
             )
         elif r > 0.1:
             seat = "{} {}".format(
-                random.choice(adjectives).capitalize(),
-                random.choice(seat_suffixes)
+                random.choice(data['adjectives']).capitalize(),
+                random.choice(data['seats'])
             )
         else:
             seat = "{} {}".format(
-                random.choice(animals),
-                random.choice(seat_suffixes)
+                random.choice(data['animals']),
+                random.choice(data['seats'])
             )
 
         return seat
 
-    def _instantiate_persons(self, titles):
+    def _instantiate_persons(self, data):
         persons = []
 
         leader = person.Noble(
+            data,
             self.name,
             self.rank,
-            leader=True,
-            titles=titles
+            alignment=self.alignment,
+            leader=True
         )
         persons.append(leader)
 
         if random.random() > 0.2:
             spouse = person.Noble(
+                data,
                 self.name,
                 self.rank,
+                alignment=self.alignment,
                 race=leader.race,
                 max_age=leader.age,
-                titles=titles
             )
-            spouse.set_spouse(leader, titles)
+            spouse.set_spouse(data, leader)
             persons.append(spouse)
 
         if leader.age < 30:
@@ -172,11 +168,12 @@ class Family():
 
         for _ in range(num_of_fam):
             mem = person.Noble(
+                data,
                 self.name,
                 self.rank,
+                alignment=self.alignment,
                 race=leader.race,
                 max_age=leader.age,
-                titles=titles
             )
 
             if mem.age == 0:
@@ -186,7 +183,7 @@ class Family():
 
         return persons
 
-    def _instantiate_courtiers(self):
+    def _instantiate_courtiers(self, data):
         courtiers = []
 
         if self.rank == ROYAL_FAMILY:
@@ -199,14 +196,14 @@ class Family():
             num = math.floor(random.random() * 4)
 
         for _ in range(num):
-            courtier = person.Person()
+            courtier = person.Person(data)
             courtier.age = max(courtier.age, person.ADULT_AGE)
             if random.random() > 0.5:
-                courtier.position = random.choice(appointments)
+                courtier.position = random.choice(data['appointments'])
             else:
                 courtier.position = "{} of {}".format(
-                    random.choice(chiefs).capitalize(),
-                    random.choice(councils)
+                    random.choice(data['chiefs']).capitalize(),
+                    random.choice(data['councils'])
                 )
             courtiers.append(courtier)
 
@@ -214,35 +211,69 @@ class Family():
 
 
 def create_nobility(
+    data,
     great_houses,
     minor_houses,
-    landed_knights,
-    titles,
-    family_realm_name
+    landed_knights
 ):
 
     nobility = []
+    toomany = False
 
-    noble_names_cp = copy.deepcopy(noble_names)
+    noble_names_cp = copy.deepcopy(data['names_noble'])
+
+    max_families = len(noble_names_cp)
+    max_great = max(max_families - 1, 0)
+    max_minor = max(max_great - great_houses, 0)
+    max_landed = max(max_minor - minor_houses, 0)
+
+    total_in = great_houses + minor_houses + landed_knights
+    great_houses_in = great_houses
+    minor_houses_in = minor_houses
+    landed_knights_in = landed_knights
+
+    if max_great < great_houses_in:
+        great_houses = max_great
+        toomany = True
+    if max_minor < minor_houses_in:
+        minor_houses = max_minor
+        toomany = True
+    if max_landed < landed_knights_in:
+        landed_knights = max_landed
+        toomany = True
+
+    created = {
+        'toomany' : toomany,
+        'total_in' : total_in,
+        'total_out' : 1 + great_houses + minor_houses + landed_knights,
+        'royal_in' : 1,
+        'royal_out' : 1,
+        'great_in' : great_houses_in,
+        'great_out' : great_houses,
+        'minor_in' : minor_houses_in,
+        'minor_out' : minor_houses,
+        'landed_in' : landed_knights_in,
+        'landed_out' : landed_knights
+    }
 
     royalty = noble_names_cp.pop()
-    royal_house = Family(royalty, ROYAL_FAMILY, titles, family_realm_name)
+    royal_house = Family(data, royalty, ROYAL_FAMILY)
     nobility.append(royal_house)
 
     for _ in range(great_houses - 1):
         name = noble_names_cp.pop()
-        h = Family(name, GREAT_FAMILY, titles, family_realm_name)
+        h = Family(data, name, GREAT_FAMILY)
         nobility.append(h)
 
     for _ in range(minor_houses):
         name = noble_names_cp.pop()
-        h = Family(name, MINOR_FAMILY, titles, family_realm_name)
+        h = Family(data, name, MINOR_FAMILY)
         liege = random.choice(nobility)
         liege.vassals.append(h)
 
     for _ in range(landed_knights):
         name = noble_names_cp.pop()
-        h = Family(name, PETTY_FAMILY, titles, family_realm_name)
+        h = Family(data, name, PETTY_FAMILY)
         liege = random.choice(nobility)
 
         if (random.random() > great_houses / (great_houses + minor_houses) and
@@ -252,7 +283,7 @@ def create_nobility(
         else:
             liege.knights.append(h)
 
-    return nobility
+    return nobility, created
 
 
 def all_families(nobility):

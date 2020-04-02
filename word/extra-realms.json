@@ -1,0 +1,14 @@
+{
+    "$schema" : "../schema/dataset.json",
+    "dataset" : "extra",
+    "data" :
+    [
+        {
+            "type" : "realm",
+            "id" : "family",
+            "name" : "Family",
+            "plural" : "Families",
+            "desc" : "Family (i.e. The Great Family of Whatever)"
+        }
+    ]
+}

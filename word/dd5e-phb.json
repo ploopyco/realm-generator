@@ -1,0 +1,52 @@
+{
+    "$schema" : "../schema/dataset.json",
+    "dataset" : "D&D 5E",
+    "data" :
+    [
+        {
+            "type" : "races",
+            "id" : "dd-phb",
+            "name" : "D&D PHB",
+            "list" : [
+                "Dragonborn",
+                "Dwarf (Hill)",
+                "Dwarf (Mountain}",
+                "Elf (Drow)",
+                "Elf (High)",
+                "Elf (Wood)",
+                "Gnome (Forest)",
+                "Gnome (Rock)",
+                "Half-Elf",
+                "Half-Orc",
+                "Halfling (Lightfoot)",
+                "Halfling (Stout)",
+                "Human",
+                "Tiefling"
+            ]
+        },
+        {
+            "type" : "alignment",
+            "id" : "dd5e",
+            "name" : "D&D Alignments",
+            "num_axes" : 2,
+            "axes" : [
+                {
+                    "axis" : "Law-Chaos",
+                    "list" : [
+                        "Lawful",
+                        "Neutral",
+                        "Chaotic"
+                    ]
+                },
+                { 
+                    "axis" : "Good-Evil",
+                    "list" : [
+                        "Good",
+                        "Neutral",
+                        "Evil"
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,56 @@
+{
+    "$schema" : "../schema/dataset.json",
+    "dataset" : "base",
+    "data" :
+    [
+        {
+            "type" : "realm",
+            "id" : "house",
+            "name" : "House",
+            "plural" : "Houses",
+            "desc" : "House (i.e. The Great House of Whatever)"
+        },
+        {
+            "type" : "realm",
+            "id" : "hearth",
+            "name" : "Hearth",
+            "plural" : "Hearths",
+            "desc" : "Hearth (i.e. The Great Hearth of Whatever)"
+        },
+        {
+            "type" : "realm",
+            "id" : "domain",
+            "name" : "Domain",
+            "plural" : "Domains",
+            "desc" : "Domain (i.e. The Great Domain of Whatever)"
+        },
+        {
+            "type" : "realm",
+            "id" : "clan",
+            "name" : "Clan",
+            "plural" : "Clans",
+            "desc" : "Clan (i.e. The Great Clan of Whatever)"
+        },
+        {
+            "type" : "realm",
+            "id" : "tribe",
+            "name" : "Tribe",
+            "plural": "Tribes",
+            "desc" : "Tribe (i.e. The Great Tribe of Whatever)"
+        },
+        {
+            "type" : "realm",
+            "id" : "dynasty",
+            "name" : "Dynasty",
+            "plural" : "Dynasties",
+            "desc" : "Dynasty (i.e. The Great Dynasty of Whatever)"
+        },
+        {
+            "type" : "realm",
+            "id" : "fastness",
+            "name" : "Fastness",
+            "plural" : "Fastnesses",
+            "desc" : "Fastness (i.e. The Great Fastness of Whatever)"
+        }
+    ]
+}

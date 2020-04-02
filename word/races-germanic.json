@@ -1,0 +1,26 @@
+{
+    "$schema" : "../schema/dataset.json",
+    "dataset" : "germanic",
+    "data" :
+    [ 
+        {
+            "type" : "races",
+            "id" : "germanic",
+            "name" : "Germanic Tribes",
+            "list" : 
+            [
+                "Frisian",
+                "Saxon",
+                "Angle",
+                "Hessian",
+                "Frank",
+                "Lombard",
+                "Alemanni",
+                "Bavarian",
+                "Goth",
+                "Vandal",
+                "Burgundian"
+            ]
+        }
+    ]
+}

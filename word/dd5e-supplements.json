@@ -1,0 +1,161 @@
+{
+    "$schema" : "../schema/dataset.json",
+    "dataset" : "D&D 5E",
+    "data" :
+    [
+        {
+            "type" : "races",
+            "id" : "dd-dmg",
+            "name" : "D&D DMG",
+            "list" : [
+                "Aasimar",
+                "Elf (Eladrin)"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-mtf",
+            "name" : "D&D MTF",
+            "list" : [
+                "Dwarf (Duergar)",
+                "Elf (Eladrin)",
+                "Elf (Sea)",
+                "Elf (Shadar-kai)",
+                "Gith (Githyanki)",
+                "Gith (Githzerai)",
+                "Gnome (Deep)",
+                "Tiefling (Asmodeus)",
+                "Tiefling (Baalzebul)",
+                "Tiefling (Dispater)",
+                "Tiefling (Fierna)",
+                "Tiefling (Glasya)",
+                "Tiefling (Levistus)",
+                "Tiefling (Mammon)",
+                "Tiefling (Mephistopheles)",
+                "Tiefling (Zariel)"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-vgm",
+            "name" : "D&D VGM",
+            "list" : [
+                "Aasimar (Fallen)",
+                "Aasimar (Protector)",
+                "Aasimar (Scourge)",
+                "Bugbear",
+                "Firbolg",
+                "Goblin",
+                "Goliath",
+                "Hobgoblin",
+                "Kenku",
+                "Kobold",
+                "Lizardfolk",
+                "Orc",
+                "Tabaxi",
+                "Triton",
+                "Yuan-ti Pureblood"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-eepc",
+            "name" : "D&D EEPC",
+            "list" : [
+                "Aarakocra",
+                "Genasi",
+                "Genasi (Air)",
+                "Genasi (Earth)",
+                "Genasi (Fire)",
+                "Genasi (Water)",
+                "Gnome (Deep/Svrifneblin)",
+                "Goliath"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-ggr",
+            "name" : "D&D GGR",
+            "list" : [
+                "Centaur",
+                "Goblin",
+                "Loxodon",
+                "Minotaur",
+                "Simic Hybrid",
+                "Vedalken"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-scag",
+            "name" : "D&D SCAG",
+            "list" : [
+                "Dwarf (Duergar)",
+                "Gnome (Deep/Svrifneblin)",
+                "Half-Elf (Aquatic Elf Descent)",
+                "Half-Elf (Drow Descent)",
+                "Half-Elf (Moon Elf or Sun Elf Descent)",
+                "Half-Elf (Wood Elf Descent)",
+                "Halfling (Ghostwise)"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-erlw",
+            "name" : "D&D ERLW",
+            "list" : [
+                "Bugbear",
+                "Changeling",
+                "Dwarf (Mark of Warding)",
+                "Elf (Mark of Shadow)",
+                "Gnome (Mark of Scribing)",
+                "Goblin",
+                "Half-Elf (Mark of Detection)",
+                "Half-Elf (Mark of Storm)",
+                "Half-Orc (Mark of Finding)",
+                "Halfling (Mark of Healing)",
+                "Halfling (Mark of Hospitality)",
+                "Hobgoblin",
+                "Human (Mark of Finding)",
+                "Human (Mark of Handling)",
+                "Human (Mark of Making)",
+                "Human (Mark of Passage)",
+                "Human (Mark of Sentinel)",
+                "Kalashtar",
+                "Orc",
+                "Shifter (Beasthide)",
+                "Shifter (Longtooth)",
+                "Shifter (Swiftstride)",
+                "Shifter (Wildhunt)",
+                "Warforged"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-ai",
+            "name" : "D&D AI",
+            "list" : [
+                "Verdan"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-egw",
+            "name" : "D&D EGW",
+            "list" : [
+                "Dragonborn (Draconblood)",
+                "Dragonborn (Ravenite)",
+                "Elf (Pallid)",
+                "Halfling (Lotusden)"
+            ]
+        },
+        {
+            "type" : "races",
+            "id" : "dd-ttp",
+            "name" : "D&D TTP",
+            "list" : [
+                "Tortle"
+            ]
+        }
+    ]
+}

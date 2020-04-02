@@ -5,23 +5,12 @@ import wtforms.validators
 import random
 import os
 import json
+import glob
 
 from . import family
 from . import faction
 from . import event
 
-from .word.name.noble import noble_names
-from .word.name.female import female_names
-from .word.name.male import male_names
-from .word.name.nickname import nick_names
-from .word.adjective.whimsical import whimsical_adjectives
-from .word.adjective.standard import adjectives
-from .word.animal import animals
-from .word.cognomen import cognomens
-from .word.race import races
-from .word.motto import mottos
-from .word.title import titles
-from .word.seat import seat_suffixes
 
 # Some good default values
 GREAT_FAMILIES = 7
@@ -49,8 +38,7 @@ def index():
     else:
         return flask.render_template(
             'home.html',
-            form=form,
-            noble_limit=len(noble_names)
+            form=form
         )
 
 
@@ -82,33 +70,107 @@ def generate_realm(form):
     start_courtier_events = form.start_courtier_events.data
     start_family_events = form.start_family_events.data
 
-    chosen_titles = form.titles.data
+    data = {
+        'races' : [],
+        'titles' : {},
+        'realm' : {},
+        'alignment' : {},
+        'animals' : [],
+        'appointments' : [],
+        'chiefs' : [],
+        'councils' : [],
+        'cognomens' : [],
+        'family_m' : [],
+        'family_f' : [],
+        'mottos' : [],
+        'seats' : [],
+        'adjectives' : [],
+        'adjectives_whimsical' : [],
+        'faction_prefixes' : [],
+        'faction_suffixes' : [],
+        'nicknames' : [],
+        'names_noble': [],
+        'names_male' : [],
+        'names_female' : []
+        }
 
-    family_realm_name = form.realms.data
+    jsonfiles = glob.glob("word/*.json")
 
-    random.shuffle(noble_names)
-    random.shuffle(male_names)
-    random.shuffle(female_names)
-    random.shuffle(cognomens)
-    random.shuffle(nick_names)
-    random.shuffle(whimsical_adjectives)
-    random.shuffle(adjectives)
-    random.shuffle(races)
-    random.shuffle(animals)
-    random.shuffle(mottos)
-    random.shuffle(seat_suffixes)
+    for f in jsonfiles:
+        with open(f, 'rb') as jfile:
+            obj = json.load(jfile, encoding='utf-8')
+            for d in obj['data']:
+                if d['type'] == 'races' and d['id'] in form.races.data:
+                    data['races'].extend(d['list'])
+                elif d['type'] == 'titles' and d['id'] in form.titles.data:
+                    data['titles'] = d
+                elif d['type'] == 'realm' and d['id'] in form.realms.data:
+                    data['realm'] = d
+                elif d['type'] == 'alignment' and d['id'] in form.align.data:
+                    data['alignment'] = d
+                elif d['type'] == 'names_noble' and d['id'] in form.names_n.data:
+                    data['names_noble'].extend(d['list'])
+                elif d['type'] == 'names_male' and d['id'] in form.names_m.data:
+                    data['names_male'].extend(d['list'])
+                elif d['type'] == 'names_female' and d['id'] in form.names_f.data:
+                    data['names_female'].extend(d['list'])
+                elif d['type'] == 'animals':
+                    data['animals'].extend(d['list'])
+                elif d['type'] == 'appointments':
+                    data['appointments'].extend(d['list'])
+                elif d['type'] == 'chiefs':
+                    data['chiefs'].extend(d['list'])
+                elif d['type'] == 'councils':
+                    data['councils'].extend(d['list'])
+                elif d['type'] == 'cognomens':
+                    data['cognomens'].extend(d['list'])
+                elif d['type'] == 'family_m':
+                    data['family_m'].extend(d['list'])
+                elif d['type'] == 'family_f':
+                    data['family_f'].extend(d['list'])
+                elif d['type'] == 'mottos':
+                    data['mottos'].extend(d['list'])
+                elif d['type'] == 'seats':
+                    data['seats'].extend(d['list'])
+                elif d['type'] == 'adjectives':
+                    data['adjectives'].extend(d['list'])
+                elif d['type'] == 'adjectives_whimsical':
+                    data['adjectives_whimsical'].extend(d['list'])
+                elif d['type'] == 'faction_prefixes':
+                    data['faction_prefixes'].extend(d['list'])
+                elif d['type'] == 'faction_suffixes':
+                    data['faction_suffixes'].extend(d['list'])
+                elif d['type'] == 'nicknames':
+                    data['nicknames'].extend(d['list'])
 
-    chosen_titles_d = [d for d in titles if d["type"] == chosen_titles][0]
+    data['races'] = list(set(data['races']))
+    data['animals'] = list(set(data['animals']))
+    data['appointments'] = list(set(data['appointments']))
+    data['chiefs'] = list(set(data['chiefs']))
+    data['councils'] = list(set(data['councils']))
+    data['cognomens'] = list(set(data['cognomens']))
+    data['family_m'] = list(set(data['family_m']))
+    data['family_f'] = list(set(data['family_f']))
+    data['mottos'] = list(set(data['mottos']))
+    data['seats'] = list(set(data['seats']))
+    data['adjectives'] = list(set(data['adjectives']))
+    data['adjectives_whimsical'] = list(set(data['adjectives_whimsical']))
+    data['faction_prefixes'] = list(set(data['faction_prefixes']))
+    data['faction_suffixes'] = list(set(data['faction_suffixes']))
+    data['nicknames'] = list(set(data['nicknames']))
+    data['names_noble'] = list(set(data['names_noble']))
+    data['names_male'] = list(set(data['names_male']))
+    data['names_female'] = list(set(data['names_female']))
 
-    nobility = family.create_nobility(
+    nobility, feedback = family.create_nobility(
+        data,
         great_families,
         minor_families,
-        knights,
-        chosen_titles_d,
-        family_realm_name
+        knights
     )
 
     factions = faction.create_factions(
+        data,
         powerful_factions,
         weak_factions,
         nobility
@@ -116,13 +178,14 @@ def generate_realm(form):
 
     event_generator = event.EventGenerator(nobility, factions)
     for _ in range(start_noble_events):
-        event_generator.new_noble_event()
+        event_generator.new_noble_event(data)
     for _ in range(start_courtier_events):
-        event_generator.new_courtier_event()
+        event_generator.new_courtier_event(data)
     for _ in range(start_family_events):
-        event_generator.new_family_event()
+        event_generator.new_family_event(data)
 
     realm = {
+        "feedback": feedback,
         "nobility": nobility,
         "factions": factions
     }
@@ -131,6 +194,75 @@ def generate_realm(form):
 
 
 class GenerateForm(flask_wtf.FlaskForm):
+
+    datasets = []
+    dataset_names = []
+    race_data = []
+    title_data = []
+    realm_data = []
+    align_data = []
+    names_n_data = []
+    names_m_data = []
+    names_f_data = []
+    jsonfiles = glob.glob("word/*.json")
+
+    for f in jsonfiles:
+        with open(f, 'rb') as jfile:
+            obj = json.load(jfile, encoding='utf-8')
+            if obj['dataset'] in dataset_names:
+                for dset in datasets:
+                    if dset['dataset'] == obj['dataset']:
+                        dset['data'].extend(obj['data'])
+            elif 'dataset' in obj:
+                datasets.append(obj)
+                dataset_names.append(obj['dataset'])
+
+    # separated from load to allow for dynamic list building in future
+    for dset in datasets:
+        for d in dset['data']:
+            if d['type'] == 'races':
+                race_data.append(d)
+            elif d['type'] == 'titles':
+                title_data.append(d)
+            elif d['type'] == 'realm':
+                realm_data.append(d)
+            elif d['type'] == 'alignment':
+                align_data.append(d)
+            elif d['type'] == 'names_noble':
+                names_n_data.append(d)
+            elif d['type'] == 'names_male':
+                names_m_data.append(d)
+            elif d['type'] == 'names_female':
+                names_f_data.append(d)
+
+    race_choices = []
+    race_choices.extend([(s['id'], s['name']) for s in race_data])
+    race_choices.sort(key=lambda r: r[1])
+
+    title_choices = []
+    title_choices.extend([(s['id'], s['name']) for s in title_data])
+    title_choices.sort(key=lambda r: r[1])
+
+    realm_choices = []
+    realm_choices.extend([(s['id'], s['desc']) for s in realm_data])
+    realm_choices.sort(key=lambda r: r[1])
+
+    align_choices = []
+    align_choices.extend([(s['id'], s['name']) for s in align_data])
+    align_choices.sort(key=lambda r: r[1])
+
+    names_n_choices = []
+    names_n_choices.extend([(s['id'], s['name']) for s in names_n_data])
+    names_n_choices.sort(key=lambda r: r[1])
+
+    names_m_choices = []
+    names_m_choices.extend([(s['id'], s['name']) for s in names_m_data])
+    names_m_choices.sort(key=lambda r: r[1])
+
+    names_f_choices = []
+    names_f_choices.extend([(s['id'], s['name']) for s in names_f_data])
+    names_f_choices.sort(key=lambda r: r[1])
+
     great_families = wtforms.IntegerField(
         'Great Noble Families',
         validators=[wtforms.validators.DataRequired()],
@@ -176,29 +308,44 @@ class GenerateForm(flask_wtf.FlaskForm):
 
     titles = wtforms.RadioField(
         'Title Stylings',
-        choices=[
-            ('british', 'British (King, Lord, Sir)'),
-            ('roman', 'Roman (Emperor, Dominus, Consulus)'),
-            ('byzantine', 'Byzantine (Basileus, Despot, Sebastor)'),
-            ('russian', 'Russian (Tsar, Count, Baron)'),
-            ('sanskrit', 'Sanskrit (Maharaja, Amir, Sardar)'),
-            ('persian', 'Persian (Shah, Marzban, Istandar)')
-        ],
-        default='british'
+        choices=title_choices,
+        default=title_choices[0][0]
     )
 
     realms = wtforms.RadioField(
         'Family Realm Names',
-        choices=[
-            ('House', 'House (i.e. The Great House of Whatever)'),
-            ('Hearth', 'Hearth (i.e. The Great Hearth of Whatever)'),
-            ('Domain', 'Domain (i.e. The Great Domain of Whatever)'),
-            ('Clan', 'Clan (i.e. The Great Clan of Whatever)'),
-            ('Tribe', 'Tribe (i.e. The Great Tribe of Whatever)'),
-            ('Dynasty', 'Dynasty (i.e. The Great Dynasty of Whatever)'),
-            ('Fastness', 'Fastness (i.e. The Great Fastness of Whatever)')
-        ],
-        default='House'
+        choices=realm_choices,
+        default='house'
+    )
+
+    races = wtforms.SelectMultipleField(
+        'Races',
+        choices=race_choices,
+        default=[c[0] for c in race_choices if c[0][:2] == 'dd']
+    )
+
+    align = wtforms.RadioField(
+        'Alignments',
+        choices=align_choices,
+        default='none'
+    )
+
+    names_n = wtforms.SelectMultipleField(
+        'Noble Names',
+        choices=names_n_choices,
+        default=[c[0] for c in names_n_choices if c[0][:4] == 'base']
+    )
+
+    names_m = wtforms.SelectMultipleField(
+        'Male Names',
+        choices=names_m_choices,
+        default=[c[0] for c in names_m_choices if c[0][:4] == 'base']
+    )
+
+    names_f = wtforms.SelectMultipleField(
+        'Female Names',
+        choices=names_f_choices,
+        default=[c[0] for c in names_f_choices if c[0][:4] == 'base']
     )
 
     submit = wtforms.SubmitField('Generate A Realm Now!')

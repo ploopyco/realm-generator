@@ -2,16 +2,7 @@ import math
 import random
 
 from . import family
-
-from .word.name.female import female_names
-from .word.name.male import male_names
-from .word.adjective.whimsical import whimsical_adjectives
-from .word.adjective.standard import adjectives
-from .word.animal import animals
-from .word.family import male_family, female_family
-from .word.cognomen import cognomens
-from .word.race import races
-from .word.title import titles as titles_library
+from .alignment import get_alignment
 
 MAX_AGE = 99
 MALE = "male"
@@ -23,7 +14,9 @@ ADULT_AGE = 20
 class Person():
     def __init__(
         self,
+        data,
         race=None,
+        alignment=None,
         leader=False,
         max_age=MAX_AGE,
     ):
@@ -34,8 +27,8 @@ class Person():
             self.sex = FEMALE
 
         self.leader = leader
-        self.character = random.choice(adjectives)
-        self.past = random.choice(adjectives)
+        self.character = random.choice(data['adjectives'])
+        self.past = random.choice(data['adjectives'])
         self.leader_relation = None
         self.position = None
         self.events = []
@@ -43,10 +36,10 @@ class Person():
             self.pre_nickname,
             self.firstname,
             self.post_nickname,
-        ) = self._generate_name()
+        ) = self._generate_name(data)
 
         if race is None:
-            self.race = random.choice(races)
+            self.race = random.choice(data['races'])
         else:
             self.race = race
 
@@ -54,8 +47,14 @@ class Person():
             self.age = ADULT_AGE + math.floor(
                 random.random() * (max_age - ADULT_AGE)
             )
+            self.alignment = alignment
+            if alignment is None:
+                self.alignment_print = 'none'
+            else:
+                self.alignment_print = ' '.join(self.alignment)
         else:
             self.age = math.floor(random.random() * max_age)
+            self.alignment, self.alignment_print = get_alignment(data, bias=alignment)
 
     def get_first_name(self):
         name = self.firstname
@@ -73,11 +72,11 @@ class Person():
             name = name + " \"" + self.post_nickname + "\""
         return name
 
-    def _generate_name(self):
+    def _generate_name(self, data):
         if self.sex == MALE:
-            firstname = random.choice(male_names)
+            firstname = random.choice(data['names_male'])
         else:
-            firstname = random.choice(female_names)
+            firstname = random.choice(data['names_female'])
 
         post_nickname = None
         pre_nickname = None
@@ -85,22 +84,22 @@ class Person():
         r = random.random() * 30
 
         if r < 15 and self.leader is True:
-            post_nickname = "{}".format(random.choice(cognomens))
+            post_nickname = "{}".format(random.choice(data['cognomens']))
         elif r < 1:
             post_nickname = "the {}".format(
-                random.choice(adjectives).capitalize()
+                random.choice(data['adjectives']).capitalize()
             )
         elif r < 2:
-            pre_nickname = random.choice(adjectives).capitalize()
+            pre_nickname = random.choice(data['adjectives']).capitalize()
         elif r < 3:
             post_nickname = "the {}".format(
-                random.choice(whimsical_adjectives).capitalize()
+                random.choice(data['adjectives_whimsical']).capitalize()
             )
         elif r < 4:
-            pre_nickname = random.choice(animals).capitalize()
+            pre_nickname = random.choice(data['animals']).capitalize()
         elif r < 5:
             post_nickname = "the {}".format(
-                random.choice(animals)
+                random.choice(data['animals'])
             )
 
         return pre_nickname, firstname, post_nickname
@@ -109,26 +108,25 @@ class Person():
 class Noble(Person):
     def __init__(
         self,
+        data,
         family_name,
         rank,
+        alignment=None,
         race=None,
         leader=False,
-        max_age=MAX_AGE,
-        titles=None
+        max_age=MAX_AGE
     ):
-        super().__init__(race=race, leader=leader, max_age=max_age)
+        super().__init__(data, race=race, alignment=alignment, leader=leader, max_age=max_age)
 
         self.rank = rank
         self.family_name = family_name
 
         if leader is False:
-            self.leader_relation = self._generate_relation()
+            self.leader_relation = self._generate_relation(data)
         else:
             self.leader_relation = None
 
-        if titles is None:
-            titles = titles_library[0]
-        self.title = self._get_title(titles)
+        self.title = self._get_title(data['titles'])
 
     def get_full_name(self):
         name = self.firstname
@@ -139,30 +137,30 @@ class Noble(Person):
         name = name + " " + self.family_name
         return name
 
-    def set_spouse(self, leader, titles):
+    def set_spouse(self, data, leader):
         if random.random() * 100 > 10:
             if leader.sex == MALE:
                 self.leader_relation = "wife"
                 self.sex = FEMALE
-                self.firstname = random.choice(female_names)
+                self.firstname = random.choice(data['names_female'])
             else:
                 self.leader_relation = "husband"
                 self.sex = MALE
-                self.firstname = random.choice(male_names)
+                self.firstname = random.choice(data['names_male'])
         else:
             if leader.sex == MALE:
                 self.leader_relation = "husband"
                 self.sex = MALE
-                self.firstname = random.choice(male_names)
+                self.firstname = random.choice(data['names_male'])
             else:
                 self.leader_relation = "wife"
                 self.sex = FEMALE
-                self.firstname = random.choice(female_names)
+                self.firstname = random.choice(data['names_female'])
 
         if self.age < ADULT_AGE:
             self.age = ADULT_AGE
 
-        self.title = self._get_title(titles)
+        self.title = self._get_title(data['titles'])
 
     def get_full_title(self):
         return self.title + " " + self.get_first_name()
@@ -178,11 +176,11 @@ class Noble(Person):
 
         return s
 
-    def _generate_relation(self):
+    def _generate_relation(self, data):
         if self.sex == MALE:
-            leader_relation = random.choice(male_family)
+            leader_relation = random.choice(data['family_m'])
         else:
-            leader_relation = random.choice(female_family)
+            leader_relation = random.choice(data['family_f'])
 
         return leader_relation
 

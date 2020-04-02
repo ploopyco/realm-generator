@@ -50,7 +50,7 @@
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
         <br>
-        <p id="noble-limit-warning">Make sure that these add up to less than {{ noble_limit }}.</p>
+        <p id="noble-limit-warning">Results will be limited to the total number of noble names available, even if these numbers exceed them.</p>
       </div>
       <div class="col-md">
         <h4><b>How many factions do you want?</b></h4>
@@ -119,6 +119,51 @@
           <br>
         {% endfor %}
         {% for error in form.realms.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row my-4">
+      <div class="col-md">
+        <h4><b>What sources of races or ethnicities do you want?</b></h4>
+        {{form.races}}
+        {% for error in form.races.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="col-md">
+        <h4><b>What alignment system do you want?</b></h4>
+        {% for subfield in form.align %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
+        {% for error in form.align.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="row my-4">
+      <div class="col-md">
+        <h4><b>What sources of Noble names do you want?</b></h4>
+        {{form.names_n}}
+        {% for error in form.names_n.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="col-md">
+        <h4><b>What sources of Male names do you want?</b></h4>
+        {{form.names_m}}
+        {% for error in form.names_m.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
+      <div class="col-md">
+        <h4><b>What sources of Female names do you want?</b></h4>
+        {{form.names_f}}
+        {% for error in form.names_f.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
       </div>
