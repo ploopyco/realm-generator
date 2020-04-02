@@ -1,8 +1,8 @@
 import random
 import inspect
 
-from . import family
-from . import person
+from realm_generator import family
+from realm_generator import person
 
 
 class EventGenerator():

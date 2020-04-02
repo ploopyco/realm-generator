@@ -1,8 +1,7 @@
-import math
 import random
 
+
 def get_alignment(data, bias=None, stdev=1):
-    
     align = None
     align_print = 'none'
 

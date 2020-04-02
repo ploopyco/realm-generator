@@ -127,8 +127,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Ploopy donation page
-templates/donate.html
-donate.py
-static/
-
+# Ploopy Square API keys
+keys.json
