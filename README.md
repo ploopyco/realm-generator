@@ -33,8 +33,7 @@ Pull requests are welcome. Here are a few things that I'd like to work on, but p
   - Although this is fine, a solution that would be more easy to extend would be to make a markup schema for events (in YAML or whatever), and make event.py a parser of this schema which can then generate events.
 - Making a list of realm names.
   - Realms have no names. Oh, well. You can make up your own or use a generator. Eventually, though, I'd like a list of realms that generate a name for the generated realm. Makes sense, yeah.
-- Migrate everything in the "word" directory from native python lists into markup files.
-  - A cosmetic change, mostly.
+
 ## A few notes on names
 
 In general, names were chosen that were easy to pronounce for a North American English native speaker. Furthermore, a lot of guesses were made about things that have to do with foreign historical civilisations; mistakes are certain to have been made.
