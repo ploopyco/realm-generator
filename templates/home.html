@@ -185,18 +185,6 @@
       $('#overlay').fadeIn();
       return;
     });
-
-    $('.families-input').on('input',function(e){
-      var x = 0;
-      $('.families-input').each(function() {
-        x += parseInt($(this).val());
-      });
-
-      if (x > {{ noble_limit }})
-        $("#noble-limit-warning").css("color", "red");
-      else
-        $("#noble-limit-warning").css("color", "black");
-    });
   });
 </script>
 {% endblock %}
