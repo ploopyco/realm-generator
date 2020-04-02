@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!--
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-136670545-1"></script>
+      <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'UA-136670545-1');
+      </script>
+      -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Donate to support projects like The Realm Generator!">
+    <meta name="author" content="">
+    <title>The Realm Generator - Donate</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <style>
+      #half-row > .row {
+          min-height: 100vh;
+      }
+
+      .flex-fill {
+          flex:1 1 auto;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="half-row" class="container-fluid main_container d-flex">
+      <div class="row flex-fill">
+        <div class="col-sm-6 half-row bg-faded flex-fill" style="background-image: url('/static/donate.jpg'); background-position-x: center">
+        </div>
+
+        <div class="col-sm-6 half-row bg-faded flex-fill">
+
+          <div class="container py-5">
+            <div class="text-center">
+              <img class="d-block mx-auto mb-4" src="/static/logo.png" alt="" width="72">
+              <h2>Like what you see? Support us!</h2>
+            </div>
+            <p>We're <a href="https://ploopy.co">Ploopy</a>, and we make shit. We like doing things for the open-source community, but it takes, you know, money. For food. For us to eat. If you want us to keep doing stuff like this, give us money. Doesn't have to be a lot. Every little bit keeps us on our feet and in front of our computers, cranking out stuff.</p>
+
+            <form id="generate-form" action="" method="post" novalidate>
+              <div class="row align-items-center">
+                <div class="col-sm-3 text-center">
+                  {{ form.hidden_tag() }}
+                  {% for subfield in form.amounts %}
+                    <tr>
+                      <td>{{ subfield }}</td>
+                      <td>{{ subfield.label }}</td>
+                    </tr>
+                    <br>
+                  {% endfor %}
+                  {% for error in form.amounts.errors %}
+                  <span style="color: red;">{{ error }}</span>
+                  {% endfor %}
+                </div>
+                <div class="col-sm-9 my-4">
+                  {{ form.submit(class="form-control btn-lg btn-primary") }}
+                </div>
+              </div>
+            </form>
+
+            <div class="text-center">
+                <i>You will be rerouted to Square for secure payment processing.</i>
+                <br>
+                <img src="/static/square.png" class="pt-2" style="max-height:120px">
+            </div>
+          </div>
+      
+          <div class="text-muted text-center text-small">
+              <p >&copy; 2020, <a href="https://ploopy.co">Ploopy Corporation</a></p>
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href="https://ploopy.co/privacy">Privacy</a></li>
+                  <li class="list-inline-item"><a href="https://ploopy.co/terms-of-use">Terms Of Use</a></li>
+                  <li class="list-inline-item"><a href="https://ploopy.co/terms-of-sale">Terms Of Sale</a></li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>

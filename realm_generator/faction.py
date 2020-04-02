@@ -1,8 +1,8 @@
 import math
 import random
 
-from . import person
-from .alignment import get_alignment
+from realm_generator import person
+from realm_generator import alignment
 
 
 class Faction():
@@ -17,7 +17,7 @@ class Faction():
         self.powerful = powerful
         self.reputation = random.choice(data['adjectives'])
 
-        self.alignment, self.alignment_print = get_alignment(data)
+        self.alignment, self.alignment_print = alignment.get_alignment(data)
 
         num_of_mems = 3 + math.floor(random.random() * 7)
 

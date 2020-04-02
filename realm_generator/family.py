@@ -2,8 +2,8 @@ import math
 import random
 import copy
 
-from . import person
-from .alignment import get_alignment
+from realm_generator import person
+from realm_generator import alignment
 
 
 ROYAL_FAMILY = "royal"
@@ -22,7 +22,7 @@ class Family():
         self.motto = random.choice(data['mottos'])
         self.reputation = random.choice(data['adjectives'])
 
-        self.alignment, self.alignment_print = get_alignment(data)
+        self.alignment, self.alignment_print = alignment.get_alignment(data)
 
         self.family_realm_name = data['realm']['name']
         self.family_realm_plural = data['realm']['plural']
@@ -243,17 +243,17 @@ def create_nobility(
         toomany = True
 
     created = {
-        'toomany' : toomany,
-        'total_in' : total_in,
-        'total_out' : 1 + great_houses + minor_houses + landed_knights,
-        'royal_in' : 1,
-        'royal_out' : 1,
-        'great_in' : great_houses_in,
-        'great_out' : great_houses,
-        'minor_in' : minor_houses_in,
-        'minor_out' : minor_houses,
-        'landed_in' : landed_knights_in,
-        'landed_out' : landed_knights
+        'toomany': toomany,
+        'total_in': total_in,
+        'total_out': 1 + great_houses + minor_houses + landed_knights,
+        'royal_in': 1,
+        'royal_out': 1,
+        'great_in': great_houses_in,
+        'great_out': great_houses,
+        'minor_in': minor_houses_in,
+        'minor_out': minor_houses,
+        'landed_in': landed_knights_in,
+        'landed_out': landed_knights
     }
 
     royalty = noble_names_cp.pop()

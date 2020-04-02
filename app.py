@@ -7,9 +7,10 @@ import os
 import json
 import glob
 
-from . import family
-from . import faction
-from . import event
+from realm_generator import family
+from realm_generator import faction
+from realm_generator import event
+from realm_generator import donate
 
 
 # Some good default values
@@ -94,7 +95,7 @@ def generate_realm(form):
         'names_female': []
     }
 
-    jsonfiles = glob.glob("word/*.json")
+    jsonfiles = glob.glob("realm_generator/word/*.json")
 
     for f in jsonfiles:
         with open(f, 'rb') as jfile:
@@ -209,7 +210,7 @@ class GenerateForm(flask_wtf.FlaskForm):
     names_n_data = []
     names_m_data = []
     names_f_data = []
-    jsonfiles = glob.glob("word/*.json")
+    jsonfiles = glob.glob("realm_generator/word/*.json")
 
     for f in jsonfiles:
         with open(f, 'rb') as jfile:

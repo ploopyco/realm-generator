@@ -1,8 +1,8 @@
 import math
 import random
 
-from . import family
-from .alignment import get_alignment
+from realm_generator import family
+from realm_generator import alignment as al
 
 MAX_AGE = 99
 MALE = "male"
@@ -54,7 +54,7 @@ class Person():
                 self.alignment_print = ' '.join(self.alignment)
         else:
             self.age = math.floor(random.random() * max_age)
-            self.alignment, self.alignment_print = get_alignment(data, bias=alignment)
+            self.alignment, self.alignment_print = al.get_alignment(data, bias=alignment)
 
     def get_first_name(self):
         name = self.firstname
