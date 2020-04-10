@@ -11,6 +11,9 @@ class EventGenerator():
     def __init__(self, data, nobility, factions):
         self.nobility = nobility
         self.factions = factions
+        self.all_families = family.all_families(nobility)
+        self.all_nobles = family.all_nobles(nobility)
+        self.all_courtiers = family.all_courtiers(nobility)
         self.noble_event_defs = []
         self.noble_event_weights = []
         self.courtier_event_defs = []
@@ -227,7 +230,7 @@ class EventGenerator():
         # get a family meeting requirements
         while not suitable and actor_attempts > 0:
             actor_attempts -= 1
-            f = family.random_family(self.nobility)
+            f = random.choice(self.all_families)
             suitable = self.is_suitable(f, actor_def)
         if actor_attempts == 0:
             return None
@@ -259,7 +262,7 @@ class EventGenerator():
                 f = fam
                 n = random.choice(f.persons)
             else:
-                f, n = random.choice(family.all_nobles(self.nobility))
+                f, n = random.choice(self.all_nobles)
             suitable = self.is_suitable(n, actor_def)
         if actor_attempts == 0:
             return None
@@ -279,7 +282,7 @@ class EventGenerator():
                 c = random.choice(fam.courtiers)
                 f = fam
             else:
-                c = random.choice(family.all_courtiers(self.nobility))
+                c = random.choice(self.all_courtiers)
             suitable = self.is_suitable(c, actor_def)
         if actor_attempts == 0:
             return None
