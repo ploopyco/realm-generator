@@ -6,9 +6,26 @@ from realm_generator import person
 
 
 class EventGenerator():
-    def __init__(self, nobility, factions):
+    def __init__(self, data, nobility, factions):
         self.nobility = nobility
         self.factions = factions
+        self.noble_event_defs = []
+        self.noble_event_weights = []
+        self.courtier_event_defs = []
+        self.courtier_event_weights = []
+        self.family_event_defs = []
+        self.family_event_weights = []
+
+        for e_def in data['event_defs']:
+            if e_def['event_type'] == 'noble':
+                self.noble_event_defs.append(e_def)
+                self.noble_event_weights.append(e_def['weight'])
+            elif e_def['event_type'] == 'courtier':
+                self.courtier_event_defs.append(e_def)
+                self.courtier_event_weights.append(e_def['weight'])
+            elif e_def['event_type'] == 'family':
+                self.family_event_defs.append(e_def)
+                self.family_event_weights.append(e_def['weight'])
 
     def new_noble_event(self, data):
         event_fs = inspect.getmembers(

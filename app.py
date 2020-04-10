@@ -92,7 +92,9 @@ def generate_realm(form):
         'nicknames': [],
         'names_noble': [],
         'names_male': [],
-        'names_female': []
+        'names_female': [],
+        'event_defs' : [],
+        'event_ids' : []
     }
 
     jsonfiles = glob.glob("realm_generator/word/*.json")
@@ -143,6 +145,10 @@ def generate_realm(form):
                     data['faction_suffixes'].extend(d['list'])
                 elif d['type'] == 'nicknames':
                     data['nicknames'].extend(d['list'])
+                elif d['type'] == 'event':
+                    if d['id'] not in data['event_ids']:
+                        data['event_defs'].append(d)
+                        data['event_ids'].append(d['id'])
 
     data['races'] = list(set(data['races']))
     data['animals'] = list(set(data['animals']))
@@ -177,7 +183,7 @@ def generate_realm(form):
         nobility
     )
 
-    event_generator = event.EventGenerator(nobility, factions)
+    event_generator = event.EventGenerator(data, nobility, factions)
     for _ in range(start_noble_events):
         event_generator.new_noble_event(data)
     for _ in range(start_courtier_events):
