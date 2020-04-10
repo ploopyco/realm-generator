@@ -271,7 +271,6 @@ class EventGenerator():
             actors[actor_def['family_var']] = { 'type': 'family', 'object': f }
         return actors
 
-    # TODO: fix courtier family thing
     def get_courtier_for_event(self, actor_def, fam=None):
         suitable = False
         actor_attempts = MAX_ACTOR_ATTEMPTS
@@ -279,8 +278,17 @@ class EventGenerator():
         while not suitable and actor_attempts > 0:
             actor_attempts -= 1
             if fam is not None:
-                c = random.choice(fam.courtiers)
                 f = fam
+                c = random.choice(fam.courtiers)
+            elif 'family_var' in actor_def.keys():
+                f = random.choice(self.all_families)
+                timeout = 1000
+                while len(f.courtiers < 1):
+                    timeout -= 1
+                    if timeout == 0:
+                        return None
+                    f = random.choice(self.all_families)
+                c = random.choice(f.courtiers)
             else:
                 c = random.choice(self.all_courtiers)
             suitable = self.is_suitable(c, actor_def)
