@@ -77,6 +77,15 @@ class EventGenerator():
         if group_attempts == 0:
             return None
         # build description using defined description and actors
+        # first pass to replace random tokens
+        if 'random_tokens' in event_def.keys():
+            converted = []
+            for token in tokens:
+                if token in event_def['random_tokens'].keys():
+                    token = random.choice(event_def['random_tokens'][token])
+                converted.append(token)
+            tokens = converted
+        # build description by substituting actor names for tokens
         for token in tokens:
             if token in actors.keys():
                 if actors[token]['type'] == 'family':

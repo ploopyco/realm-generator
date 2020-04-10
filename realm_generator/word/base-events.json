@@ -323,8 +323,8 @@
             "type" : "event",
             "group_name" : "Default",
             "event_type" : "noble",
-            "id" : "honour_duel_n1_win",
-            "weight" : 500,
+            "id" : "honour_duel",
+            "weight" : 1000,
             "actor_defs" : [
                 {
                     "type" : "noble",
@@ -351,41 +351,8 @@
                 }
             ],
             "attach_event" : [ "n1", "n2" ],
-            "description" : "|n1| of the |f1| dueled with |n2| of the |f2|; |n1| won"
-        },
-        {
-            "type" : "event",
-            "group_name" : "Default",
-            "event_type" : "noble",
-            "id" : "honour_duel_n2_win",
-            "weight" : 500,
-            "actor_defs" : [
-                {
-                    "type" : "noble",
-                    "req_gt" : { "age" : 17 },
-                    "var" : "n1",
-                    "family_var" : "f1"
-                },
-                {
-                    "type" : "noble",
-                    "req_gt" : { "age" : 17 },
-                    "var" : "n2",
-                    "family_var" : "f2"
-                }
-            ],
-            "req_matches" : [
-                {
-                    "actors" : [ "n1", "n2" ],
-                    "req_actors_any_neq" : [ 
-                        "pre_nickname", 
-                        "firstname", 
-                        "post_nickname", 
-                        "family_name" 
-                    ]
-                }
-            ],
-            "attach_event" : [ "n1", "n2" ],
-            "description" : "|n1| of the |f1| dueled with |n2| of the |f2|; |n2| won"
+            "random_tokens" : { "winner" : [ "n1", "n2" ] },
+            "description" : "|n1| of the |f1| dueled with |n2| of the |f2|; |winner| won"
         },
         {
             "type" : "event",
