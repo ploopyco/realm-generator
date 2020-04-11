@@ -99,7 +99,7 @@ class EventGenerator():
             elif token == 'faction':
                 desc_list.append(random.choice(self.factions).name)
             elif token == 'animal':
-                desc_list.append(random.choice(data['animals']))
+                desc_list.append(random.choice(data['animals']).lower())
             elif token == 'adjective':
                 desc_list.append(random.choice(data['adjectives']))
             else:
