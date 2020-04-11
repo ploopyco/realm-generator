@@ -150,6 +150,19 @@
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
       </div>
+      <div class="col-md">
+        <h4><b>What sources events do you want?</b></h4>
+        {% for subfield in form.events %}
+          <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+          </tr>
+          <br>
+        {% endfor %}
+        {% for error in form.events.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+      </div>
     </div>
     <div class="row my-4">
       <div class="col-md">
