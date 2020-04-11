@@ -62,6 +62,190 @@
                 "monarchess", "heir", "heiress", "lord", "lordess", 
                 "knight", "knightess"]
         },
+        "actor_noble" : {
+            "$id" : "#actor_noble",
+            "type" : "object",
+            "properties" : {
+                "type" : { "type" : "string", "enum" : [ "noble" ] },
+                "var" : { "type" : "string" },
+                "family_var" : { "type" : "string" },
+                "req_eq" : { "type" : "object" },
+                "req_not_eq" : { "type" : "object" },
+                "req_gt" : { "type" : "object" },
+                "req_lt" : { "type" : "object" },
+                "req_in" : { 
+                    "type" : "object",
+                    "additionalProperties": { "type" : "array" }
+                },
+                "req_not_in" : { 
+                    "type" : "object",
+                    "additionalProperties": { "type" : "array" }
+                },
+                "req_has" : { "type" : "array" },
+                "req_not_has" : { "type" : "array" },
+                "req_len_gt" : { "type" : "object" },
+                "req_len_lt" : { "type" : "object" }
+            },
+            "required" : [ "type", "var" ],
+            "additionalProperties": false
+        },
+        "actor_courtier" : {
+            "$id" : "#actor_courtier",
+            "type" : "object",
+            "properties" : {
+                "type" : { "type" : "string", "enum" : [ "courtier" ] },
+                "var" : { "type" : "string" },
+                "family_var" : { "type" : "string" },
+                "position_var" : { "type" : "string" },
+                "req_eq" : { "type" : "object" },
+                "req_not_eq" : { "type" : "object" },
+                "req_gt" : { "type" : "object" },
+                "req_lt" : { "type" : "object" },
+                "req_in" : { 
+                    "type" : "object",
+                    "additionalProperties": { "type" : "array" }
+                },
+                "req_not_in" : { 
+                    "type" : "object",
+                    "additionalProperties": { "type" : "array" }
+                },
+                "req_has" : { "type" : "array" },
+                "req_not_has" : { "type" : "array" },
+                "req_len_gt" : { "type" : "object" },
+                "req_len_lt" : { "type" : "object" }
+            },
+            "required" : [ "type", "var" ],
+            "additionalProperties": false
+        },
+        "actor_family" : {
+            "$id" : "#actor_family",
+            "type" : "object",
+            "properties" : {
+                "type" : { "type" : "string", "enum" : [ "family" ] },
+                "var" : { "type" : "string" },
+                "member_defs" : {
+                    "type" : "array",
+                    "uniqueItems" : true,
+                    "items" : {
+                        "anyOf" : [
+                            { "$ref" : "#/definitions/actor_noble" },
+                            { "$ref" : "#/definitions/actor_courtier" }
+                        ]
+                    },
+                    "minItems" : 1
+                },
+                "req_eq" : { "type" : "object" },
+                "req_not_eq" : { "type" : "object" },
+                "req_gt" : { "type" : "object" },
+                "req_lt" : { "type" : "object" },
+                "req_in" : { 
+                    "type" : "object",
+                    "additionalProperties": { "type" : "array" }
+                },
+                "req_not_in" : { 
+                    "type" : "object",
+                    "additionalProperties": { "type" : "array" }
+                },
+                "req_has" : { "type" : "array", "minItems" : 1 },
+                "req_not_has" : { "type" : "array", "minItems" : 1 },
+                "req_len_gt" : { "type" : "object" },
+                "req_len_lt" : { "type" : "object" }
+            },
+            "required" : [ "type", "var" ],
+            "additionalProperties": false
+        },
+        "event" : {
+            "$id" : "#event",
+            "type" : "object",
+            "properties" : {
+                "type" : { "type" : "string", "enum" : [ "event" ] },
+                "group_name" : { "type" : "string" },
+                "event_type" : { 
+                    "type" : "string", 
+                    "enum" : [ "family", "noble", "courtier" ] 
+                },
+                "id" : { "type" : "string" },
+                "weight" : { "type" : "number" },
+                "actor_defs" : { 
+                    "type" : "array",
+                    "uniqueItems" : true,
+                    "items" : {
+                        "anyOf" : [
+                            { "$ref" : "#/definitions/actor_family" },
+                            { "$ref" : "#/definitions/actor_noble" },
+                            { "$ref" : "#/definitions/actor_courtier" }
+                        ]
+                    },
+                    "minItems" : 1
+                },
+                "req_matches" : { 
+                    "type" : "array",
+                    "uniqueItems": true,
+                    "items" : {
+                        "type" : "object",
+                        "properties" : {
+                            "actors" : { 
+                                "type" : "array",
+                                "uniqueItems": true, 
+                                "items" : { "type" : "string" },
+                                "minItems" : 2
+                            },
+                            "req_actors_any_eq" : { 
+                                "type" : "array",
+                                "uniqueItems": true,
+                                "items" : { "type" : "string" },
+                                "minItems" : 1
+                            },
+                            "req_actors_any_neq" : { 
+                                "type" : "array",
+                                "uniqueItems": true,
+                                "items" : { "type" : "string" },
+                                "minItems" : 1
+                            },
+                            "req_actors_all_eq" : { 
+                                "type" : "array",
+                                "uniqueItems": true,
+                                "items" : { "type" : "string" },
+                                "minItems" : 1
+                            },
+                            "req_actors_all_neq" : { 
+                                "type" : "array",
+                                "uniqueItems": true,
+                                "items" : { "type" : "string" },
+                                "minItems" : 1
+                            },
+                            "req_vassalage" : { 
+                                "type" : "object",
+                                "properties" : {
+                                    "lord" : { "type" : "string" },
+                                    "vassal" : { "type" : "string" }
+                                },
+                                "required" : [ "lord", "vassal" ],
+                                "additionalProperties" : false
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required" : [ "actors" ]
+                    }
+                },
+                "attach_event" : { 
+                    "type" : "array",
+                    "items" : { "type" : "string" },
+                    "minItems" : 1
+                },
+                "random_tokens" : { 
+                    "type" : "object",
+                     "additionalProperties": { 
+                         "type" : "array",
+                         "items" : { "type" : "string" } 
+                        }
+                },
+                "description" : { "type" : "string" }
+            },
+            "required" : [ "type", "group_name", "event_type", "id", 
+                "weight", "actor_defs", "attach_event", 
+                "description"]
+        },
         "listdata" : {
             "$id" : "#listdata",
             "type" : "object",
@@ -114,7 +298,8 @@
                     { "$ref" : "#/definitions/listdata" },
                     { "$ref" : "#/definitions/alignment" },
                     { "$ref" : "#/definitions/realms"},
-                    { "$ref" : "#/definitions/titles"}
+                    { "$ref" : "#/definitions/titles"},
+                    { "$ref" : "#/definitions/event" }
                 ]
             }
         }
