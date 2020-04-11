@@ -335,7 +335,7 @@ The random tokens are processed and replaced before the other variables, which l
 
 This is quite long, and shows off many of the things we have discussed so far. The part that is most interesting at this point is at the bottom. You can see that the random_tokens defines a token named `"winner"` that can be `"n1"` or `"n2"`, which are the same as the two actor variables. When the event is being generated, the random tokens will be processed first, so `|winner|` will get replaced with either `n1` or `n2`. Then, when the actor variables are processed, that token will be treated as if it was always the actor variable, so we can have a random winner of the duel. Note that when used in this way the random token list should not include the `|` characters - those are stripped in an earlier step, and will result in the description including them literally as `"|n1|"` or `"|n2|"`.
 
-There is an alternate method of acheiving this same behavior: create two events that are the same, but with different ids and a different actor token in the description, and then give them each half of the weight. 
+There is an alternate method of achieving this same behavior: create two events that are the same, but with different ids and a different actor token in the description, and then give them each half of the weight. 
 
 ## More Examples 
 
