@@ -162,6 +162,8 @@ class EventGenerator():
         if actors == {} or 'req_matches' not in event_def.keys():
             return True
         for match in event_def['req_matches']:
+            if len(match['actors']) < 2:
+                break
             entities = [ v['object'] for k, v in actors.items() if k in match['actors']]
             if 'req_actors_any_eq' in match.keys():
                 suitable = False
