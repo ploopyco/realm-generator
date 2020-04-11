@@ -217,7 +217,7 @@ class GenerateForm(flask_wtf.FlaskForm):
     names_m_data = []
     names_f_data = []
     event_data = []
-    jsonfiles = glob.glob("realm_generator/word/*.json")
+    jsonfiles = glob.glob('realm_generator/word/*.json')
 
     for f in jsonfiles:
         with open(f, 'rb') as jfile:
