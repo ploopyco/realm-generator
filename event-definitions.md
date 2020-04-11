@@ -37,7 +37,7 @@ This contains every necessary property of an event, and everything in this event
 * This is the event ID. It must be unique, as only one event definition with any given id will be loaded, in order to prevent accidental duplicates from altering the probabilities of events occurring.
 
 `"weight" : 1000`
-* This determines the frequency at which the event will be randomly selected. The base weight I have used is 1000, so any event that you want to occur at the normal rate should have weight 1000. If you want the event to occur less frequently, give it a lower weight. This can be used to, as in the marriage events, adjust specific properties' frequency of occurence, by creating two similar events with different actor requirements and then setting their combined weights to equal 1000. Every 1 weight then becomes 0.1% likelihood for the event going either way. See the "marriage_straight" and "marriage_gay" for an example of generating a lower-probability event based on requirements, in that case equal or unequal "sex" properties.
+* This determines the frequency at which the event will be randomly selected. The base weight I have used is 1000, so any event that you want to occur at the normal rate should have weight 1000. If you want the event to occur less frequently, give it a lower weight. This can be used to, as in the marriage events, adjust specific properties' frequency of occurence, by creating two similar events with different actor requirements and then setting their combined weights to equal 1000. Every 1 weight then becomes 0.1% likelihood for the event going either way. See the "marriage_straight" and "marriage_gay" event definitions in `base-events.json` for an example of generating a lower-probability event based on requirements, in that case equal or unequal "sex" properties.
 
 `"actor_defs" : [
     {
@@ -45,15 +45,24 @@ This contains every necessary property of an event, and everything in this event
         "var" : "n1"
     }
 ],`
-* This is an array of what I've called "actors", which are nobles, courtiers, or families that are selected based on constraints (which I have called "requirements") and are then inserted into the description string to make the event. This is the simplest possible actor definition - one actor, with a type and variable. The possible types are `"noble"`, `"courtier"`, and `"family"`, corresponding to those same objects in the realm generator. The `"var"` is the string which will be replaced in the description and may be any unique string, with the following exceptions: `"faction"`, `"animal"`, `"adjective"`, or any other actor var or random token. Random tokens will be discussed below.
+* This is an array defining what I've called "actors", which are nobles, courtiers, or families that are selected based on constraints (which I have called "requirements") and are then inserted into the description string to make the event. This is the simplest possible actor definition - one actor, with a type and variable.
+    * Every actor definition is *required* to have the following properties:
+        * `"type"`: may be `"noble"`, `"courtier"`, or `"family'`, corresponding to the objects of the same names in the realm generator
+        * `"var"`: is used as a token in the `"description"`, where it will be replaced with the actor's name; may be any string except the following:
+            * `"faction"`
+            * `"animal"`
+            * `"adjective"`
+            * any other defined actor variable 
+            * any defined random token (discussed further in their own section)
+    * Noble and Courtier actors may have additional optional variables defined:
+        * `"noble"` and `"courtier"` type actors may have a `"family_var"` variable set, which will be replaced with the name of the family they are members of; this has the same restrictions as the actor's `"var"`
+        * `"courtier"` type actors may have a `"position_var"` variable, which will be replaced with their position; this has the same restrictions as the actor's `"var"`
 
 `"attach_event" : [ "n1" ]`
 * This lists the actor variables representing the objects to which the event should be attached - any variable listed here will have the event appended to the corresponding object's events list. There must be at least one valid entry in the list or the event visible after the realm is generated.
 
 `"description" : "|n1| was strongly suspected of the murder of a commoner"`
-* This is the event text, with variables bracketed by the | character. Anything bracketed by the | character becomes a token, and if an actor variable exists with a matching string, that token will be replaced by the actor's name. There are a few special tokens: 
-    * `"noble"` and `"courtier"` type actors can have a `"family_var"` variable set, which will correspond to the name of the family they are members of
-    * `"courtier"` type actors can have a `"position_var"` variable, which will correspond to their position
+* This is the event description text, with tokens bracketed by the `|` character. Anything bracketed by the `|` character becomes a token, and if an actor variable exists with a matching string, that token will be replaced by the actor's name. There are a few special tokens: 
     * `|faction|` will be replaced by a randomly selected faction
     * `|animal|` will be replaced by a randomly selected animal
     * `|adjective|` will be replaced by a randomly selected adjective
