@@ -37,3 +37,7 @@ Pull requests are welcome. Here are a few things that I'd like to work on, but p
 ## A few notes on names
 
 In general, names were chosen that were easy to pronounce for a North American English native speaker. Furthermore, a lot of guesses were made about things that have to do with foreign historical civilisations; mistakes are certain to have been made.
+
+## A note to myself
+
+This is deployed via Render using [this fork](https://github.com/realm-generator-throw/realm-generator).*
