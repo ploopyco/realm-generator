@@ -101,7 +101,7 @@ def generate_realm(form):
 
     for f in jsonfiles:
         with open(f, 'rb') as jfile:
-            obj = json.load(jfile, encoding='utf-8')
+            obj = json.load(jfile)
             for d in obj['data']:
                 if d['type'] == 'races' and d['id'] in form.races.data:
                     data['races'].extend(d['list'])
@@ -221,7 +221,7 @@ class GenerateForm(flask_wtf.FlaskForm):
 
     for f in jsonfiles:
         with open(f, 'rb') as jfile:
-            obj = json.load(jfile, encoding='utf-8')
+            obj = json.load(jfile)
             if obj['dataset'] in dataset_names:
                 for dset in datasets:
                     if dset['dataset'] == obj['dataset']:
