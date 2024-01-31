@@ -1,661 +1,316 @@
 import random
-import inspect
 
 from realm_generator import family
 from realm_generator import person
 
 
+MAX_ACTOR_ATTEMPTS = 1000
+MAX_GROUP_ATTEMPTS = 1000
+
 class EventGenerator():
-    def __init__(self, nobility, factions):
+    def __init__(self, data, nobility, factions):
         self.nobility = nobility
         self.factions = factions
+        self.all_families = family.all_families(nobility)
+        self.all_nobles = family.all_nobles(nobility)
+        self.all_courtiers = family.all_courtiers(nobility)
+        self.noble_event_defs = []
+        self.noble_event_weights = []
+        self.courtier_event_defs = []
+        self.courtier_event_weights = []
+        self.family_event_defs = []
+        self.family_event_weights = []
+
+        for e_def in data['event_defs']:
+            if e_def['event_type'] == 'noble':
+                self.noble_event_defs.append(e_def)
+                self.noble_event_weights.append(e_def['weight'])
+            elif e_def['event_type'] == 'courtier':
+                self.courtier_event_defs.append(e_def)
+                self.courtier_event_weights.append(e_def['weight'])
+            elif e_def['event_type'] == 'family':
+                self.family_event_defs.append(e_def)
+                self.family_event_weights.append(e_def['weight'])
 
     def new_noble_event(self, data):
-        event_fs = inspect.getmembers(
-            self,
-            predicate=inspect.ismethod
-        )
-        fs_list = [y for (x, y) in event_fs if x.startswith("gen_event_n_")]
-        return self._new_event(data, fs_list)
+        event_def = random.choices(self.noble_event_defs, weights=self.noble_event_weights)
+        return self._new_event(data, event_def[0])
 
     def new_courtier_event(self, data):
-        event_fs = inspect.getmembers(
-            self,
-            predicate=inspect.ismethod
-        )
-        fs_list = [y for (x, y) in event_fs if x.startswith("gen_event_c_")]
-        return self._new_event(data, fs_list)
+        event_def = random.choices(self.courtier_event_defs, weights=self.courtier_event_weights)
+        return self._new_event(data, event_def[0])
 
     def new_family_event(self, data):
-        event_fs = inspect.getmembers(
-            self,
-            predicate=inspect.ismethod
-        )
-        fs_list = [y for (x, y) in event_fs if x.startswith("gen_event_f_")]
-        return self._new_event(data, fs_list)
+        event_def = random.choices(self.family_event_defs, weights=self.family_event_weights)
+        return self._new_event(data, event_def[0])
 
-    def _new_event(self, data, fs_list):
-        if len(fs_list) == 0:
-            return
-        event = random.choice(fs_list)(data)
-        for o in event.affected_organizations:
-            o.events.append(event)
-        del event.affected_organizations  # prevent circular reference
-        for p in event.affected_persons:
-            p.events.append(event)
-        del event.affected_persons  # prevent circular reference
-        return event
-
-    def gen_event_n_matrimony(self, data):
+    def _new_event(self, data, event_def):
         event = Event(data)
-
-        nobles = family.all_nobles(self.nobility)
-        f1, n1 = random.choice(nobles)
-        f2, n2 = random.choice(nobles)
-
-        if random.random() * 100 > 10:
-            while (n1.sex == n2.sex or
-                    n1.get_full_title() == n2.get_full_title()):
-                f2, n2 = random.choice(nobles)
-        else:
-            while n1.get_full_title() == n2.get_full_title():
-                f2, n2 = random.choice(nobles)
-
-        event.affected_persons.append(n1)
-        event.affected_persons.append(n2)
-        event.affected_organizations.append(f1)
-        event.affected_organizations.append(f2)
-
-        event.description = "{} of the {} was wed to {} of the {}".format(
-            n1.get_full_title(),
-            f1.create_html_a_name(self.nobility),
-            n2.get_full_title(),
-            f2.create_html_a_name(self.nobility)
-        )
-
+        actors = {}
+        desc_list = []
+        tokens = event_def['description'].split('|')
+        group_attempts = MAX_GROUP_ATTEMPTS
+        matching = False
+        # get all actors defined in event definition
+        while not matching and group_attempts > 0:
+            group_attempts -= 1
+            for actor_def in event_def['actor_defs']:
+                if actor_def['type'] == 'family':
+                    family = self.get_family_for_event(actor_def)
+                    if family is None:
+                        return None
+                    else:
+                        actors.update(family)
+                elif actor_def['type'] == 'noble':
+                    noble = self.get_noble_for_event(actor_def)
+                    if noble is None:
+                        return None
+                    else:
+                        actors.update(noble)
+                elif actor_def['type'] == 'courtier':
+                    courtier = self.get_courtier_for_event(actor_def)
+                    if courtier is None:
+                        return None
+                    else:
+                        actors.update(courtier)
+            matching = self.match_reqs(actors, event_def)
+        if group_attempts == 0:
+            return None
+        # build description using defined description and actors
+        # first pass to replace random tokens
+        if 'random_tokens' in event_def.keys():
+            converted = []
+            for token in tokens:
+                if token in event_def['random_tokens'].keys():
+                    token = random.choice(event_def['random_tokens'][token])
+                converted.append(token)
+            tokens = converted
+        # build description by substituting actor names for tokens
+        for token in tokens:
+            if token in actors.keys():
+                if actors[token]['type'] == 'family':
+                    desc_list.append(actors[token]['object'].create_html_a_name(self.nobility))
+                elif actors[token]['type'] == 'noble':
+                    desc_list.append(actors[token]['object'].get_full_title())
+                elif actors[token]['type'] == 'courtier':
+                    desc_list.append(actors[token]['object'].get_first_name())
+                elif actors[token]['type'] == 'c_position':
+                    desc_list.append(actors[token]['position'])
+            elif token == 'faction':
+                desc_list.append(random.choice(self.factions).name)
+            elif token == 'animal':
+                desc_list.append(random.choice(data['animals']).lower())
+            elif token == 'adjective':
+                desc_list.append(random.choice(data['adjectives']))
+            else:
+                desc_list.append(token)
+        event.description = "".join(desc_list)
+        # attach event to appropriate persons/families
+        for var in event_def['attach_event']:
+            if (actors[var]['type'] == 'family'
+                    or actors[var]['type'] == 'noble' 
+                    or actors[var]['type'] == 'courtier'):
+                actors[var]['object'].events.append(event)
         return event
 
-    def gen_event_n_divorce(self, data):
-        event = Event(data)
-
-        nobles = family.all_nobles(self.nobility)
-        f1, n1 = random.choice(nobles)
-        f2, n2 = random.choice(nobles)
-
-        if random.random() * 100 > 3.5:
-            while (n1.sex == n2.sex or
-                    n1.get_full_title() == n2.get_full_title()):
-                f2, n2 = random.choice(nobles)
-        else:
-            while n1.get_full_title() == n2.get_full_title():
-                f2, n2 = random.choice(nobles)
-
-        event.affected_persons.append(n1)
-        event.affected_persons.append(n2)
-        event.affected_organizations.append(f1)
-        event.affected_organizations.append(f2)
-
-        event.description = (
-            "{} of the {} and {} of the {} officially divorced"
-        ).format(
-            n1.get_full_title(),
-            f1.create_html_a_name(self.nobility),
-            n2.get_full_title(),
-            f2.create_html_a_name(self.nobility)
-        )
-
-        return event
-
-    def gen_event_n_illicit_lovers(self, data):
-        event = Event(data)
-
-        nobles = family.all_nobles(self.nobility)
-        f1, n1 = random.choice(nobles)
-        f2, n2 = random.choice(nobles)
-
-        if random.random() * 100 > 3.5:
-            while (n1.sex == n2.sex or
-                    n1.get_full_title() == n2.get_full_title()):
-                f2, n2 = random.choice(nobles)
-        else:
-            while n1.get_full_title() == n2.get_full_title():
-                f2, n2 = random.choice(nobles)
-
-        event.affected_persons.append(n1)
-        event.affected_persons.append(n2)
-        event.affected_organizations.append(f1)
-        event.affected_organizations.append(f2)
-
-        event.description = (
-            "An illicit love affair was discovered "
-            "between {} of the {} and {} of the {}".format(
-                n1.get_full_title(),
-                f1.create_html_a_name(self.nobility),
-                n2.get_full_title(),
-                f2.create_html_a_name(self.nobility)
-            )
-        )
-
-        return event
-
-    def gen_event_n_baby(self, data):
-        event = Event(data)
-        _, n = family.random_noble(self.nobility)
-        event.affected_persons.append(n)
-        event.description = (
-            "A baby was born to {}".format(
-                n.get_full_title()
-            )
-        )
-        return event
-
-    def gen_event_n_bastard(self, data):
-        event = Event(data)
-        _, n = family.random_noble(self.nobility)
-        event.affected_persons.append(n)
-        event.description = (
-            "A bastard was born to {}".format(
-                n.get_full_title()
-            )
-        )
-        return event
-
-    def gen_event_n_murdered_commoner(self, data):
-        event = Event(data)
-        _, n = family.random_noble(self.nobility)
-        event.affected_persons.append(n)
-        event.description = (
-            "{} was strongly suspected in the murder of a commoner".format(
-                n.get_full_title()
-            )
-        )
-        return event
-
-    def gen_event_n_tournament_win(self, data):
-        event = Event(data)
-        _, n = family.random_noble(self.nobility)
-        event.affected_persons.append(n)
-        event.description = (
-            "{} won a regional tournament".format(
-                n.get_full_title()
-            )
-        )
-        return event
-
-    def gen_event_n_joined_faction(self, data):
-        event = Event(data)
-        _, n = family.random_noble(self.nobility)
-        f = random.choice(self.factions)
-        event.affected_persons.append(n)
-        event.description = (
-            "{} abdicated and joined the {}".format(
-                n.get_full_title(),
-                f.name
-            )
-        )
-        return event
-
-    def gen_event_n_celebrated_birthday(self, data):
-        event = Event(data)
-        _, n = family.random_noble(self.nobility)
-        event.affected_persons.append(n)
-        event.description = (
-            "{} celebrated a birthday".format(
-                n.get_full_title()
-            )
-        )
-        return event
-
-    def gen_event_n_dismissed_courtiers(self, data):
-        event = Event(data)
-        f, n = family.random_noble(self.nobility)
-        event.affected_persons.append(n)
-        event.description = (
-            "{} dismissed all of the courtiers at the {}".format(
-                n.get_full_title(),
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_n_honour_duel(self, data):
-        event = Event(data)
-
-        nobles = family.all_nobles(self.nobility)
-        f1, n1 = random.choice(nobles)
-        f2, n2 = random.choice(nobles)
-
-        while (n1.age < person.ADULT_AGE or n2.age < person.ADULT_AGE or
-                n1.get_full_title() == n2.get_full_title()):
-            f1, n1 = random.choice(nobles)
-            f2, n2 = random.choice(nobles)
-
-        event.affected_persons.append(n1)
-        event.affected_persons.append(n2)
-
-        event.description = (
-            "{} of the {} dueled with {} of the {}; {} won".format(
-                n1.get_full_title(),
-                f1.create_html_a_name(self.nobility),
-                n2.get_full_title(),
-                f2.create_html_a_name(self.nobility),
-                random.choice([n1, n2]).get_first_name()
-            )
-        )
-
-        return event
-
-    def gen_event_n_revenge_killing(self, data):
-        event = Event(data)
-
-        nobles = family.all_nobles(self.nobility)
-        f1, n1 = random.choice(nobles)
-        f2, n2 = random.choice(nobles)
-
-        while (n1.age < person.ADULT_AGE or n2.age < person.ADULT_AGE or
-                n1.get_full_title() == n2.get_full_title()):
-            f1, n1 = random.choice(nobles)
-            f2, n2 = random.choice(nobles)
-
-        event.affected_persons.append(n1)
-        event.affected_persons.append(n2)
-
-        event.description = (
-            "{} of the {} killed {} of the {} in vengeance".format(
-                n1.get_full_title(),
-                f1.create_html_a_name(self.nobility),
-                n2.get_full_title(),
-                f2.create_html_a_name(self.nobility)
-            )
-        )
-
-        return event
-
-    def gen_event_n_death_illness(self, data):
-        event = Event(data)
-        _, n = family.random_noble(self.nobility)
-        event.affected_persons.append(n)
-        event.description = (
-            "{} died due to an illness".format(
-                n.get_full_title()
-            )
-        )
-        return event
-
-    def gen_event_n_death_commoner(self, data):
-        event = Event(data)
-        _, n = family.random_noble(self.nobility)
-        event.affected_persons.append(n)
-        event.description = (
-            "{} was killed by a group of commoners".format(
-                n.get_full_title()
-            )
-        )
-        return event
-
-    def gen_event_f_claim_pressed(self, data):
-        event = Event(data)
-
-        f1 = family.random_family(self.nobility)
-        f2 = family.random_family(self.nobility)
-
-        while f1.name == f2.name:
-            f2 = family.random_family(self.nobility)
-
-        event.affected_organizations.append(f1)
-        event.affected_organizations.append(f2)
-
-        event.description = (
-            "The {} has pressed a claim on the {}".format(
-                f1.create_html_a_name(self.nobility),
-                f2.create_html_a_name(self.nobility)
-            )
-        )
-
-        return event
-
-    def gen_event_f_uprising(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        event.affected_organizations.append(f)
-        event.description = (
-            "An uprising of smallfolk has taken hold against the {}".format(
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_f_new_knight(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        while f.rank == family.PETTY_FAMILY:
-            f = family.random_family(self.nobility)
-        event.affected_organizations.append(f)
-        event.description = (
-            "The {} knighted a new person".format(
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_f_rebellion(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        while f.rank == family.PETTY_FAMILY or len(f.vassals + f.knights) == 0:
-            f = family.random_family(self.nobility)
-        fv = random.choice(f.vassals + f.knights)
-        event.affected_organizations.append(f)
-        event.affected_organizations.append(fv)
-        event.description = (
-            "The {} has rebelled against the {}".format(
-                fv.create_html_a_name(self.nobility),
-                f.create_html_a_name(self.nobility)
-            )
-        )
-        return event
-
-    def gen_event_f_festival(self, data):
-        event = Event(data)
-        h = family.random_family(self.nobility)
-        event.affected_organizations.append(h)
-        event.description = (
-            "The {} hosted a festival in honour of {}s".format(
-                h.get_full_name(),
-                random.choice(data['animals']).lower()
-            )
-        )
-        return event
-
-    def gen_event_f_famine(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        event.affected_organizations.append(f)
-        event.description = (
-            "A famine has struck the {}".format(
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_f_food_plentiful(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        event.affected_organizations.append(f)
-        event.description = (
-            "A fortuitous crop season has graced the {}".format(
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_f_drought(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        event.affected_organizations.append(f)
-        event.description = (
-            "A drought has struck the {}".format(
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_f_water_plentiful(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        event.affected_organizations.append(f)
-        event.description = (
-            "Plentiful rains grace the {}".format(
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_f_economic_downturn(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        event.affected_organizations.append(f)
-        event.description = (
-            "An economic downturn has struck the {}".format(
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_f_economic_upturn(self, data):
-        event = Event(data)
-        f = family.random_family(self.nobility)
-        event.affected_organizations.append(f)
-        event.description = (
-            "An economic upturn has graced the {}".format(
-                f.get_full_name()
-            )
-        )
-        return event
-
-    def gen_event_c_implication(self, data):
-        event = Event(data)
-
-        f = family.random_family(self.nobility)
-        while len(f.courtiers) < 2:
-            f = family.random_family(self.nobility)
-
-        c1 = random.choice(f.courtiers)
-        c2 = random.choice(f.courtiers)
-
-        while c1.get_first_name() == c2.get_first_name():
-            c2 = random.choice(f.courtiers)
-
-        event.affected_persons.append(c1)
-        event.affected_persons.append(c2)
-
-        event.description = (
-            "{} ({}) was implicated by {} ({}) "
-            "in a plot to grab power".format(
-                c1.get_first_name(),
-                c1.position,
-                c2.get_first_name(),
-                c2.position
-            )
-        )
-
-        return event
-
-    def gen_event_c_theft(self, data):
-        event = Event(data)
-
-        f = family.random_family(self.nobility)
-        while len(f.courtiers) < 2:
-            f = family.random_family(self.nobility)
-
-        c1 = random.choice(f.courtiers)
-        c2 = random.choice(f.courtiers)
-
-        while c1.get_first_name() == c2.get_first_name():
-            c2 = random.choice(f.courtiers)
-
-        event.affected_persons.append(c1)
-        event.affected_persons.append(c2)
-
-        event.description = (
-            "{} ({}) and {} ({}) were "
-            "caught in a plot to steal crown monies".format(
-                c1.get_first_name(),
-                c1.position,
-                c2.get_first_name(),
-                c2.position
-            )
-        )
-
-        return event
-
-    def gen_event_c_office_swap(self, data):
-        event = Event(data)
-
-        f = family.random_family(self.nobility)
-        while len(f.courtiers) < 2:
-            f = family.random_family(self.nobility)
-
-        c1 = random.choice(f.courtiers)
-        c2 = random.choice(f.courtiers)
-        n = random.choice(f.persons)
-
-        while c1.get_first_name() == c2.get_first_name():
-            c2 = random.choice(f.courtiers)
-
-        event.affected_persons.append(c1)
-        event.affected_persons.append(c2)
-
-        event.description = (
-            "{} ({}) and {} ({}) have swapped offices "
-            "by order of {}".format(
-                c1.get_first_name(),
-                c1.position,
-                c2.get_first_name(),
-                c2.position,
-                n.get_full_title()
-            )
-        )
-
-        return event
-
-    def gen_event_c_offense(self, data):
-        event = Event(data)
-
-        f1, n1 = family.random_noble(self.nobility)
-        f2, n2 = family.random_noble(self.nobility)
-        while (len(f1.courtiers) < 1 or
-                n1.get_full_title() == n2.get_full_title()):
-            f1, n1 = family.random_noble(self.nobility)
-            f2, n2 = family.random_noble(self.nobility)
-
-        c = random.choice(f1.courtiers)
-
-        event.affected_persons.append(n1)
-        event.affected_persons.append(n2)
-        event.affected_persons.append(c)
-
-        event.description = (
-            "{} ({}) has greatly offended {} of the {}, to the great "
-            "consternation of {} of the {}".format(
-                c.get_first_name(),
-                c.position,
-                n2.get_full_title(),
-                f2.create_html_a_name(self.nobility),
-                n1.get_full_title(),
-                f1.create_html_a_name(self.nobility),
-            )
-        )
-
-        return event
-
-    def gen_event_c_spy(self, data):
-        event = Event(data)
-
-        c = family.random_courtier(self.nobility)
-        f, n = family.random_noble(self.nobility)
-
-        event.affected_persons.append(c)
-        event.affected_persons.append(n)
-
-        event.description = (
-            "{} ({}) was revealed to be a spy for {} of the {}".format(
-                c.get_first_name(),
-                c.position,
-                n.get_full_title(),
-                f.create_html_a_name(self.nobility)
-            )
-        )
-
-        return event
-
-    def gen_event_c_duel(self, data):
-        event = Event(data)
-
-        c = family.random_courtier(self.nobility)
-        f, n = family.random_noble(self.nobility)
-
-        event.affected_persons.append(c)
-        event.affected_persons.append(n)
-
-        event.description = (
-            "{} ({}) was killed by {} of the {} in a duel of honour".format(
-                c.get_first_name(),
-                c.position,
-                n.get_full_title(),
-                f.create_html_a_name(self.nobility)
-            )
-        )
-
-        return event
-
-    def gen_event_c_hung(self, data):
-        event = Event(data)
-
-        f = family.random_family(self.nobility)
-        while len(f.courtiers) < 1:
-            f = family.random_family(self.nobility)
-
-        c = random.choice(f.courtiers)
-        n = random.choice(f.persons)
-
-        event.affected_persons.append(c)
-        event.affected_persons.append(n)
-
-        event.description = (
-            "{} ({}) was executed by {}".format(
-                c.get_first_name(),
-                c.position,
-                n.get_full_title()
-            )
-        )
-
-        return event
-
-    def gen_event_c_promotion(self, data):
-        event = Event(data)
-
-        f = family.random_family(self.nobility)
-        while len(f.courtiers) < 1:
-            f = family.random_family(self.nobility)
-
-        c = random.choice(f.courtiers)
-        n = random.choice(f.persons)
-
-        event.affected_persons.append(c)
-        event.affected_persons.append(n)
-
-        event.description = (
-            "{} was promoted to the office of {} by {}".format(
-                c.get_first_name(),
-                c.position,
-                n.get_full_title()
-            )
-        )
-
-        return event
-
-    def gen_event_c_demotion(self, data):
-        event = Event(data)
-
-        f = family.random_family(self.nobility)
-        while len(f.courtiers) < 1:
-            f = family.random_family(self.nobility)
-
-        c = random.choice(f.courtiers)
-        n = random.choice(f.persons)
-
-        event.affected_persons.append(c)
-        event.affected_persons.append(n)
-
-        event.description = (
-            "{} was removed from the office of {} by {}".format(
-                c.get_first_name(),
-                c.position,
-                n.get_full_title()
-            )
-        )
-
-        return event
+    def is_suitable(self, entity, actor_def):
+        suitable = True
+        e_dict = vars(entity)
+        if 'req_eq' in actor_def.keys():
+            if not e_dict.items() >= actor_def['req_eq'].items():
+                suitable = False
+        if 'req_not_eq' in actor_def.keys():
+            if e_dict.items() >= actor_def['req_not_eq'].items():
+                suitable = False
+        if 'req_gt' in actor_def.keys():
+            for k, v in actor_def['req_gt'].items():
+                if k not in e_dict.keys() or e_dict[k] <= v:
+                    suitable = False
+        if 'req_lt' in actor_def.keys():
+            for k, v in actor_def['req_lt'].items():
+                if k not in e_dict.keys() or e_dict[k] >= v:
+                    suitable = False
+        if 'req_in' in actor_def.keys():
+            for k, v in actor_def['req_in'].items():
+                if k not in e_dict.keys() or e_dict[k] not in v:
+                    suitable = False
+        if 'req_not_in' in actor_def.keys():
+            for k, v in actor_def['req_not_in'].items():
+                if k in e_dict.keys() and e_dict[k] in v:
+                    suitable = False
+        if 'req_has' in actor_def.keys():
+            for k in actor_def['req_has']:
+                if k not in e_dict.keys() or e_dict[k] is None:
+                    suitable = False
+        if 'req_not_has' in actor_def.keys():
+            for k in actor_def['req_not_has']:
+                if k in e_dict.keys() and e_dict[k] is not None:
+                    suitable = False
+        if 'req_len_gt' in actor_def.keys():
+            for k, v in actor_def['req_len_gt'].items():
+                if k not in e_dict.keys() or len(e_dict[k]) <= v:
+                    suitable = False
+        if 'req_len_lt' in actor_def.keys():
+            for k, v in actor_def['req_len_lt'].items():
+                if k not in e_dict.keys() or len(e_dict[k]) >= v:
+                    suitable = False
+        return suitable
+
+    def match_reqs(self, actors, event_def):
+        suitable = True
+        entities = []
+        if actors == {} or 'req_matches' not in event_def.keys():
+            return True
+        for match in event_def['req_matches']:
+            if len(match['actors']) < 2:
+                break
+            entities = [ v['object'] for k, v in actors.items() if k in match['actors']]
+            if 'req_actors_any_eq' in match.keys():
+                suitable = False
+                e = entities.pop()
+                e_dict = vars(e)
+                for attr in match['req_actors_any_eq']:
+                    for a in entities:
+                        a_dict = vars(a)
+                        if attr in a_dict.keys() and a_dict[attr] == e_dict[attr]:
+                            suitable = True
+                            break
+                entities.append(e)
+            if 'req_actors_any_neq' in match.keys():
+                suitable = False
+                e = entities.pop()
+                e_dict = vars(e)
+                for attr in match['req_actors_any_neq']:
+                    for a in entities:
+                        a_dict = vars(a)
+                        if attr in a_dict.keys() and a_dict[attr] != e_dict[attr]:
+                            suitable = True
+                            break
+                entities.append(e)
+            if 'req_actors_all_eq' in match.keys():
+                e = entities.pop()
+                e_dict = vars(e)
+                for attr in match['req_actors_all_eq']:
+                    for a in entities:
+                        a_dict = vars(a)
+                        if attr in a_dict.keys() and a_dict[attr] != e_dict[attr]:
+                            suitable = False
+                            break
+                entities.append(e)
+            if 'req_actors_all_neq' in match.keys():
+                e = entities.pop()
+                e_dict = vars(e)
+                for attr in match['req_actors_all_neq']:
+                    for a in entities:
+                        a_dict = vars(a)
+                        if attr in a_dict.keys() and a_dict[attr] == e_dict[attr] and e_dict[attr] is not None:
+                            suitable = False
+                            break
+                entities.append(e)
+            if 'req_vassalage' in match.keys():
+                v = actors[match['req_vassalage']['vassal']]['object']
+                l = actors[match['req_vassalage']['lord']]['object']
+                if v not in l.vassals and v not in l.knights:
+                    suitable = False
+        return suitable
+
+    def get_family_for_event(self, actor_def):
+        suitable = False
+        actor_attempts = MAX_ACTOR_ATTEMPTS
+        actors = {}
+        # add requirement for # courtiers, nobles if not present
+        if 'member_defs' in actor_def.keys():
+            num_c = len(
+                [m for m in actor_def['member_defs'] if m['type'] == 'courtier']
+                )
+            num_c -= 1
+            num_n = len(
+                [m for m in actor_def['member_defs'] if m['type'] == 'noble']
+                )
+            num_n -= 1
+            if not 'req_len_gt' in actor_def.keys():
+                actor_def['req_len_gt'] = { 
+                    'courtiers': num_c, 'persons': num_n 
+                    }
+            elif (not 'courtiers' in actor_def['req_len_gt'].keys() 
+                    or actor_def['req_len_gt']['courtiers'] < num_c):
+                actor_def['req_len_gt']['courtiers'] = num_c
+            elif (not 'persons' in actor_def['req_len_gt'].keys() 
+                    or actor_def['req_len_gt']['persons'] < num_n):
+                actor_def['req_len_gt']['persons'] = num_n
+        # get a family meeting requirements
+        while not suitable and actor_attempts > 0:
+            actor_attempts -= 1
+            f = random.choice(self.all_families)
+            suitable = self.is_suitable(f, actor_def)
+        if actor_attempts == 0:
+            return None
+        # get family members meeting requirements
+        if 'member_defs' in actor_def.keys():
+            for member_def in actor_def['member_defs']:
+                if member_def['type'] == 'noble':
+                    n = self.get_noble_for_event(member_def, f)
+                    if n is None:
+                        return None
+                    else:
+                        actors.update(n)
+                elif member_def['type'] == 'courtier':
+                    c = self.get_courtier_for_event(member_def, f)
+                    if c is None:
+                        return None
+                    else:
+                        actors.update(c)
+        actors[actor_def['var']] = { 'type': 'family', 'object': f }
+        return actors
+
+    def get_noble_for_event(self, actor_def, fam=None):
+        suitable = False
+        actor_attempts = MAX_ACTOR_ATTEMPTS
+        actors = {}
+        while not suitable and actor_attempts > 0:
+            actor_attempts -= 1
+            if fam is not None:
+                f = fam
+                n = random.choice(f.persons)
+            else:
+                f, n = random.choice(self.all_nobles)
+            suitable = self.is_suitable(n, actor_def)
+        if actor_attempts == 0:
+            return None
+        actors[actor_def['var']] = { 'type': 'noble', 'object': n }
+        if 'family_var' in actor_def.keys():
+            actors[actor_def['family_var']] = { 'type': 'family', 'object': f }
+        return actors
+
+    def get_courtier_for_event(self, actor_def, fam=None):
+        suitable = False
+        actor_attempts = MAX_ACTOR_ATTEMPTS
+        actors = {}
+        while not suitable and actor_attempts > 0:
+            actor_attempts -= 1
+            if fam is not None:
+                f = fam
+                c = random.choice(fam.courtiers)
+            elif 'family_var' in actor_def.keys():
+                f = random.choice(self.all_families)
+                timeout = 1000
+                while len(f.courtiers < 1):
+                    timeout -= 1
+                    if timeout == 0:
+                        return None
+                    f = random.choice(self.all_families)
+                c = random.choice(f.courtiers)
+            else:
+                c = random.choice(self.all_courtiers)
+            suitable = self.is_suitable(c, actor_def)
+        if actor_attempts == 0:
+            return None
+        actors[actor_def['var']] = { 'type': 'courtier', 'object': c }
+        if 'position_var' in actor_def.keys():
+            actors[actor_def['position_var']] = { 'type': 'c_position', 'position': c.position }
+        if 'family_var' in actor_def.keys():
+            actors[actor_def['family_var']] = { 'type': 'family', 'object': f }
+        return actors
 
 
 class Event():

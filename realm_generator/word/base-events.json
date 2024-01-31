@@ -1,0 +1,755 @@
+{
+    "$schema" : "../schema/dataset.json",
+    "dataset" : "base",
+    "data" : [
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "matrimony_straight",
+            "weight" : 900,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n1",
+                    "family_var" : "f1"
+                },
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n2",
+                    "family_var" : "f2"
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ 
+                        "pre_nickname", 
+                        "firstname", 
+                        "post_nickname", 
+                        "family_name" 
+                    ],
+                    "req_actors_all_neq" : [ "sex" ]
+                }
+            ],
+            "attach_event" : [ "n1", "n2", "f1", "f2" ],
+            "description" : "|n1| of the |f1| was wed to |n2| of the |f2|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "matrimony_gay",
+            "weight" : 100,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n1",
+                    "family_var" : "f1"
+                },
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n2",
+                    "family_var" : "f2"
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ 
+                        "pre_nickname", 
+                        "firstname", 
+                        "post_nickname", 
+                        "family_name" 
+                    ],
+                    "req_actors_all_eq" : [ "sex" ]
+                }
+            ],
+            "attach_event" : [ "n1", "n2", "f1", "f2" ],
+            "description" : "|n1| of the |f1| was wed to |n2| of the |f2|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "divorce_straight",
+            "weight" : 965,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n1",
+                    "family_var" : "f1"
+                },
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n2",
+                    "family_var" : "f2"
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ 
+                        "pre_nickname", 
+                        "firstname", 
+                        "post_nickname", 
+                        "family_name" 
+                    ],
+                    "req_actors_all_neq" : [ "sex" ]
+                }
+            ],
+            "attach_event" : [ "n1", "n2", "f1", "f2" ],
+            "description" : "|n1| of the |f1| and |n2| of the |f2| officially divorced"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "divorce_gay",
+            "weight" : 35,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n1",
+                    "family_var" : "f1"
+                },
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n2",
+                    "family_var" : "f2"
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ 
+                        "pre_nickname", 
+                        "firstname", 
+                        "post_nickname", 
+                        "family_name" 
+                    ],
+                    "req_actors_all_eq" : [ "sex" ]
+                }
+            ],
+            "attach_event" : [ "n1", "n2", "f1", "f2" ],
+            "description" : "|n1| of the |f1| and |n2| of the |f2| officially divorced"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "illicit_lovers_straight",
+            "weight" : 965,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n1",
+                    "family_var" : "f1"
+                },
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n2",
+                    "family_var" : "f2"
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ 
+                        "pre_nickname", 
+                        "firstname", 
+                        "post_nickname", 
+                        "family_name" 
+                    ],
+                    "req_actors_all_neq" : [ "sex" ]
+                }
+            ],
+            "attach_event" : [ "n1", "n2", "f1", "f2" ],
+            "description" : "An illicit love affair was discovered between |n1| of the |f1| and |n2| of the |f2|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "illicit_lovers_gay",
+            "weight" : 35,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n1",
+                    "family_var" : "f1"
+                },
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n2",
+                    "family_var" : "f2"
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ 
+                        "pre_nickname", 
+                        "firstname", 
+                        "post_nickname", 
+                        "family_name" 
+                    ],
+                    "req_actors_all_eq" : [ "sex" ]
+                }
+            ],
+            "attach_event" : [ "n1", "n2", "f1", "f2" ],
+            "description" : "An illicit love affair was discovered between |n1| of the |f1| and |n2| of the |f2|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "baby",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 18 },
+                    "var" : "parent"
+                }
+            ],
+            "attach_event" : [ "parent" ],
+            "description" : "A baby was born to |parent|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "bastard",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 18 },
+                    "var" : "n1"
+                }
+            ],
+            "attach_event" : [ "n1" ],
+            "description" : "A bastard was born to |n1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "murdered_commoner",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "var" : "n1"
+                }
+            ],
+            "attach_event" : [ "n1" ],
+            "description" : "|n1| was strongly suspected of the murder of a commoner"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "tournament_win",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "var" : "n1"
+                }
+            ],
+            "attach_event" : [ "n1" ],
+            "description" : "|n1| won a regional tournament"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "joined_faction",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "var" : "n1"
+                }
+            ],
+            "attach_event" : [ "n1" ],
+            "description" : "|n1| abdicated and joined the |faction|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "celebrated_birthday",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "var" : "n1"
+                }
+            ],
+            "attach_event" : [ "n1" ],
+            "description" : "|n1| celebrated a birthday"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "dismissed_courtiers",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "var" : "n1",
+                    "family_var" : "f1"
+                }
+            ],
+            "attach_event" : [ "n1" ],
+            "description" : "|n1| dismissed all of the courtiers at the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "honour_duel",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n1",
+                    "family_var" : "f1"
+                },
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n2",
+                    "family_var" : "f2"
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ 
+                        "pre_nickname", 
+                        "firstname", 
+                        "post_nickname", 
+                        "family_name" 
+                    ]
+                }
+            ],
+            "attach_event" : [ "n1", "n2" ],
+            "random_tokens" : { "winner" : [ "n1", "n2" ] },
+            "description" : "|n1| of the |f1| dueled with |n2| of the |f2|; |winner| won"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "revenge_killing",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n1",
+                    "family_var" : "f1"
+                },
+                {
+                    "type" : "noble",
+                    "req_gt" : { "age" : 17 },
+                    "var" : "n2",
+                    "family_var" : "f2"
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ 
+                        "pre_nickname", 
+                        "firstname", 
+                        "post_nickname", 
+                        "family_name" 
+                    ]
+                }
+            ],
+            "attach_event" : [ "n1", "n2" ],
+            "description" : "|n1| of the |f1| killed |n2| of the |f2| in vengeance"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "death_illness",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "var" : "n1"
+                }
+            ],
+            "attach_event" : [ "n1" ],
+            "description" : "|n1| died due to an illness"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "noble",
+            "id" : "death_commoner",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "noble",
+                    "var" : "n1"
+                }
+            ],
+            "attach_event" : [ "n1" ],
+            "description" : "|n1| was killed by a group of commoners"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "claim_pressed",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" },
+                { "type" : "family", "var" : "f2" }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "f1", "f2" ],
+                    "req_actors_all_neq" : [ "name" ]
+                }
+            ],
+            "attach_event" : [ "f1", "f2" ],
+            "description" : "The |f1| has pressed a claim on the |f2|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "uprising",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "An uprising of smallfolk has taken hold against the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "new_knight",
+            "weight" : 1000,
+            "actor_defs" : [
+                { 
+                    "type" : "family", 
+                    "var" : "f1",
+                    "req_not_eq" : { "rank" : "petty" }
+                }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "The |f1| knighted a new person"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "rebellion",
+            "weight" : 1000,
+            "actor_defs" : [
+                { 
+                    "type" : "family", 
+                    "var" : "f1",
+                    "req_not_eq" : { "rank" : "petty" },
+                    "req_len_gt" : { "knights" : 0 }
+                },
+                { "type" : "family", "var" : "f2" }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "f1", "f2" ],
+                    "req_actors_all_neq" : [ "name" ],
+                    "req_vassalage" : { "lord" : "f1", "vassal" : "f2" }
+                }
+            ],
+            "attach_event" : [ "f1", "f2" ],
+            "description" : "The |f2| has rebelled against the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "festival",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "The |f1| hosted a festival in honor of |animal|s"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "famine",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "A famine has struck the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "food_plentiful",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "A fortuitous crop season has graced the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "drought",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "A drought has struck the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "water_plentiful",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "Plentiful rains grace the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "economic_downturn",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "An economic downturn has struck the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "family",
+            "id" : "economic_upturn",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f1" }
+            ],
+            "attach_event" : [ "f1" ],
+            "description" : "An economic upturn has graced the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "implication",
+            "weight" : 1000,
+            "actor_defs" : [
+                { 
+                    "type" : "family", "var" : "f1",
+                    "member_defs" : [
+                        { "type" : "courtier", "var" : "c1", "position_var" : "c1p" },
+                        { "type" : "courtier", "var" : "c2", "position_var" : "c2p" }
+                    ]
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "c1", "c2" ],
+                    "req_actors_any_neq" : [ "pre_nickname", "firstname", "post_nickname" ]
+                }
+            ],
+            "attach_event" : [ "c1", "c2" ],
+            "description" : "|c1| (|c1p|) was implicated by |c2| (|c2p|) in a plot to grab power"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "theft",
+            "weight" : 1000,
+            "actor_defs" : [
+                { 
+                    "type" : "family", "var" : "f1",
+                    "member_defs" : [
+                        { "type" : "courtier", "var" : "c1", "position_var" : "c1p" },
+                        { "type" : "courtier", "var" : "c2", "position_var" : "c2p" }
+                    ]
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "c1", "c2" ],
+                    "req_actors_any_neq" : [ "pre_nickname", "firstname", "post_nickname" ]
+                }
+            ],
+            "attach_event" : [ "c1", "c2" ],
+            "description" : "|c1| (|c1p|) and |c2| (|c2p|) were caught in a plot to steal crown monies"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "office_swap",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "family", "var" : "f1",
+                    "req_len_gt" : { "courtiers" : 1, "persons" : 0 },
+                    "member_defs" : [
+                        { "type" : "courtier", "var" : "c1", "position_var" : "c1p" },
+                        { "type" : "courtier", "var" : "c2", "position_var" : "c2p" },
+                        { "type" : "noble", "var" : "n1" }
+                    ]
+                }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "c1", "c2" ],
+                    "req_actors_any_neq" : [ "pre_nickname", "firstname", "post_nickname" ]
+                }
+            ],
+            "attach_event" : [ "c1", "c2" ],
+            "description" : "|c1| (|c1p|) and |c2| (|c2p|) have swapped offices by order of |n1| of |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "offense",
+            "weight" : 1000,
+            "actor_defs" : [
+                { 
+                    "type" : "family", "var" : "f1",
+                    "member_defs": [
+                        { "type" : "courtier", "var" : "c1", "position_var": "c1p" },
+                        { "type" : "noble", "var" : "n1" }
+                    ]
+                },
+                { "type" : "noble", "var" : "n2", "family_var" : "f2" }
+            ],
+            "req_matches" : [
+                {
+                    "actors" : [ "n1", "n2" ],
+                    "req_actors_any_neq" : [ "pre_nickname", "firstname", "post_nickname" ]
+                }
+            ],
+            "attach_event" : [ "c1", "n1", "n2" ],
+            "description" : "|c1| (|c1p|) has greatly offended |n2| of the |f2|, to the great consternation of |n1| of the |f1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "spy",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "courtier", "var" : "c1", "position_var": "c1p" },
+                { "type" : "noble", "var" : "n2", "family_var" : "f2" }
+            ],
+            "attach_event" : [ "c1", "n2" ],
+            "description" : "|c1| (|c1p|) was revealed to be a spy for |n2| of the |f2|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "duel",
+            "weight" : 1000,
+            "actor_defs" : [
+                { "type" : "courtier", "var" : "c1", "position_var": "c1p" },
+                { "type" : "noble", "var" : "n2", "family_var" : "f2" }
+            ],
+            "attach_event" : [ "c1", "n2" ],
+            "description" : "|c1| (|c1p|) was killed by |n2| of the |f2| in a duel of honour"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "hung",
+            "weight" : 1000,
+            "actor_defs" : [
+                { 
+                    "type" : "family", "var" : "f1", "member_defs" : [
+                        { "type" : "courtier", "var" : "c1", "position_var": "c1p" },
+                        { "type" : "noble", "var" : "n1" }
+                    ]
+                }
+            ],
+            "attach_event" : [ "c1", "n1" ],
+            "description" : "|c1| (|c1p|) was executed by |n1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "promotion",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "family", "var" : "f1", "member_defs" : [
+                        { "type" : "courtier", "var" : "c1", "position_var" : "c1p" },
+                        { "type" : "noble", "var" : "n1" }
+                    ]
+                }
+            ],
+            "attach_event" : [ "c1", "n1" ],
+            "description" : "|c1| was promoted to the office of |c1p| by |n1|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Default",
+            "event_type" : "courtier",
+            "id" : "demotion",
+            "weight" : 1000,
+            "actor_defs" : [
+                {
+                    "type" : "family", "var" : "f1", "member_defs" : [
+                        { "type" : "courtier", "var" : "c1", "position_var" : "c1p" },
+                        { "type" : "noble", "var" : "n1" }
+                    ]
+                }
+            ],
+            "attach_event" : [ "c1", "n1" ],
+            "description" : "|c1| was removed from the office of |c1p| by |n1|"
+        }
+    ]
+}

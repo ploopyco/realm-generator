@@ -1,0 +1,252 @@
+{
+    "$schema" : "../schema/dataset.json",
+    "dataset" : "events-omens",
+    "data" : [
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "comet",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "description" : "A comet was seen over the |f|'s lands"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "meteor-shower",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "random_tokens" : { "time" : [ "a night", "two nights", "three nights", "four nights", "five nights", "a week" ] },
+            "description" : "Stars fell over the |f|'s lands for |time|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "solar-eclipse",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "description" : "The sun was swallowed by shadows recently for several minutes over |f|'s lands"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "aurora",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "description" : "The sky over the |f|'s lands was recently shrouded in ethereal veils of light at night"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "unseasonal-weather",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "description" : "The |f|'s lands have been experiencing extremely unseasonal weather"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "unseasonal-weather",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "description" : "The |f|'s lands have been experiencing extremely unseasonal weather"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "frog-rain",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "description" : "Rumors have been spreading that recently frogs rained from the sky in the |f|'s lands"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "two-headed-animal",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "random_tokens" : { "outcome" : [ "and died shortly thereafter", "and remains alive in their keeping" ] },
+            "description" : "A newborn |animal| with two heads was found on |f|'s lands |outcome|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "unseasonal-bloom",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "description" : "The flowers in |f|'s gardens have fully bloomed all at once"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "family",
+            "id" : "flower-death",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "family", "var" : "f" }
+            ],
+            "attach_event" : [ "f" ],
+            "description" : "The flowers in |f|'s gardens have all withered and died"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "lightning-struck",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "random_tokens" : { "outcome" : [ " but remained unscathed", ", which ruined their clothing but left them unharmed", " and gravely wounded", " and killed" ] },
+            "description" : "|n| was struck by lightning|outcome|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "blackbirds",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "random_tokens" : { "behavior" : [ "circling in the sky over", "bringing small objects to", "attempting to attack" ] },
+            "description" : "Flocks of blackbirds have been seen |behavior| |n|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "nightmares",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "description" : "|n| has been plagued by disturbing nightmares"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "dreams",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "description" : "|n| has been heard exclaiming about their remarkably vivid dreams"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "candles-flicker",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "description" : "Candles have been noticed flickering and dimming around |n|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "strange-colored-fire",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "random_tokens" : { "color" : [ "blue", "green", "purple", "white", "pink" ] },
+            "description" : "A fire was seen turning |color| when |n| approached"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "broken-glass",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "description" : "Several glass objects recently shattered for no apparent reason near |n|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "beeeeeeees",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "random_tokens" : { "outcome" : [ "and stung most viciously", "but left unharmed" ] },
+            "description" : "|n| was swarmed by bees |outcome|"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "charlottes-web",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "description" : "A large spiderweb was recently found, unmistakably containing |n|'s initials"
+        },
+        {
+            "type" : "event",
+            "group_name" : "Signs & Omens",
+            "event_type" : "noble",
+            "id" : "curdled-milk",
+            "weight" : 100,
+            "actor_defs" : [
+                { "type" : "noble", "var" : "n", "family_var" : "f" }
+            ],
+            "attach_event" : [ "n" ],
+            "description" : "All of the milk served to |n| in the past week has curdled"
+        }
+    ]
+}

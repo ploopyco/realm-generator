@@ -92,7 +92,9 @@ def generate_realm(form):
         'nicknames': [],
         'names_noble': [],
         'names_male': [],
-        'names_female': []
+        'names_female': [],
+        'event_defs' : [],
+        'event_ids' : []
     }
 
     jsonfiles = glob.glob("realm_generator/word/*.json")
@@ -115,6 +117,10 @@ def generate_realm(form):
                     data['names_male'].extend(d['list'])
                 elif d['type'] == 'names_female' and d['id'] in form.names_f.data:
                     data['names_female'].extend(d['list'])
+                elif d['type'] == 'event' and d['group_name'] in form.events.data:
+                    if d['id'] not in data['event_ids']:
+                        data['event_defs'].append(d)
+                        data['event_ids'].append(d['id'])
                 elif d['type'] == 'animals':
                     data['animals'].extend(d['list'])
                 elif d['type'] == 'appointments':
@@ -177,7 +183,7 @@ def generate_realm(form):
         nobility
     )
 
-    event_generator = event.EventGenerator(nobility, factions)
+    event_generator = event.EventGenerator(data, nobility, factions)
     for _ in range(start_noble_events):
         event_generator.new_noble_event(data)
     for _ in range(start_courtier_events):
@@ -210,7 +216,8 @@ class GenerateForm(flask_wtf.FlaskForm):
     names_n_data = []
     names_m_data = []
     names_f_data = []
-    jsonfiles = glob.glob("realm_generator/word/*.json")
+    event_data = []
+    jsonfiles = glob.glob('realm_generator/word/*.json')
 
     for f in jsonfiles:
         with open(f, 'rb') as jfile:
@@ -240,6 +247,8 @@ class GenerateForm(flask_wtf.FlaskForm):
                 names_m_data.append(d)
             elif d['type'] == 'names_female':
                 names_f_data.append(d)
+            elif d['type'] == "event" and d['group_name'] not in event_data:
+                event_data.append(d['group_name'])
 
     race_choices = []
     race_choices.extend([(s['id'], s['name']) for s in race_data])
@@ -268,6 +277,10 @@ class GenerateForm(flask_wtf.FlaskForm):
     names_f_choices = []
     names_f_choices.extend([(s['id'], s['name']) for s in names_f_data])
     names_f_choices.sort(key=lambda r: r[1])
+
+    event_choices = []
+    event_choices.extend([(name, name) for name in event_data])
+    event_choices.sort()
 
     great_families = wtforms.IntegerField(
         'Great Noble Families',
@@ -359,6 +372,13 @@ class GenerateForm(flask_wtf.FlaskForm):
         choices=names_f_choices,
         validators=[wtforms.validators.DataRequired()],
         default=[c[0] for c in names_f_choices if c[0][:4] == 'base']
+    )
+
+    events = MultiCheckboxField(
+        'Events',
+        choices=event_choices,
+        validators=[wtforms.validators.DataRequired()],
+        default=['Default']
     )
 
     submit = wtforms.SubmitField('Generate A Realm Now!')
